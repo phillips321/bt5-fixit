@@ -348,7 +348,6 @@ help_msg() { # help message
         exit 1
 }
 
-main(){ #default block of code
 startdir=`pwd` ; cd /tmp/
 if [ "$#" == 0 ]
 then # default run to include everything
@@ -363,8 +362,7 @@ else # only run me if i recieve a command line value
 	done
 fi
 cd ${startdir}
-}
-main
+
 exit 0
 
 # 
