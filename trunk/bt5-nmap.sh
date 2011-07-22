@@ -4,7 +4,7 @@
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
 # Released:   www.gnacktrack.co.uk
-  version=1.1
+  version=1.2
 # Dependencies:
 # 			nmap
 # 			sslscan
@@ -19,6 +19,7 @@
 # 			Allow changing of THREADS on fly by reading THREADS from file
 #
 # ChangeLog:
+#			v1.2 added timeout and width option to gnome-web-photo
 #			v1.1 added UDP custom and added NMAPUDP command string as f_uservariable()
 #			v1.0 Migrated from matts-nmap.sh --> gt-nmap.sh and improved layout using functions
 #___________________________________________________________
@@ -214,7 +215,7 @@ f_gwp(){
 		do
 			HTTPOUT="`echo "${i}" | sed -e s/:/_/g`" 
 			echo "MESSAGE: now taking photo of https://${i} and outputting as ${HTTPOUT}.png"
-			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -m photo -f --format=png https://${i} ${HTTPOUT}.png" &
+			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -t 20 -w 1024 -m photo -f --format=png https://${i} ${HTTPOUT}.png" &
 			while [ `ps -Aef --cols 200 | grep GNOME | grep xterm | wc -l` -ge ${THREADS} ]
 			do
 				sleep 5
