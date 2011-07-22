@@ -104,10 +104,10 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 	for opt in ${result}
 	do
 		clear
-		sleep 2
 		echo "###############################################"
 		echo "Now running ${opt} changes"
 		echo "###############################################"
+		sleep 2
 		case ${opt} in
 			fixsplash) : do ; fix-splash ;;
 			bashcompletion) : do ; sed -i '/# enable bash completion in/,+3{/enable bash completion/!s/^#//}' /etc/bash.bashrc ;;
@@ -115,6 +115,7 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 			installicon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
 			password) : do ; echo "Time to change your password" ; passwd ;;
 		esac
+		sleep 2
 	done
 }
 missing_stuff(){ #installs software that is missing that many people rely on!
@@ -180,6 +181,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		routerdefense "Cisco auditer" on \
 		pyrit "Install pyrit!" off \
 		fernwificracker "GUI based wifi cracker" on \
+		dropbox "Install Dropbox" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
