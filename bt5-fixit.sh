@@ -6,8 +6,15 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.3" #July/2011
+version="1.4" #July/2011
 # Changelog:
+# v1.4 - BRUTEFORCE recommended adding the following:
+#			removal of istall icon
+#			changing of password
+#			addition of mono, recordmydesktop and terminator
+#			ability to install dropbox
+#			removal of i_set option
+#			added apt-get autoremove to end of sections to clean up
 # v1.3 - Added clear after diaog and changes openvas setup message
 # v1.2 - Added mz, scapy, FernWifiCracker
 # v1.1 - Added -u flag to allow skipping to updates function
@@ -18,8 +25,9 @@ version="1.3" #July/2011
 # v0.1 - First release
 # 
 # ToDo:
-# - Let me know what you want
-# - 
+# - Check if root password is toor (and if it is offer to change it)
+# - Remove duplicate WBarConf from the Applications-->Accessories menu
+# - Add pulseaudio to System-->Prefernces-->Startup Applications
 welcome_msg() { #Introduction messagebox
 	dialog --title "bt5-fixit.sh" \
 	--msgbox "Authors: phillips321 (matt@phillips321.co.uk)
@@ -27,6 +35,14 @@ License: CC BY-SA 3.0
 Use: Brings tools on BackTrack5 to bleeding edge and adds missing tools
 Released: www.phillips321.co.uk
 Version: ${version}" 10 60
+}
+rootcheck() { #checks to see if user is root
+	if [ `echo -n $USER` != "root" ]
+	then
+		dialog --title "EPIC FAIL" --msgbox "You can only run this tool as root" 8 60
+		clear
+		exit 1
+	fi
 }
 netcheck() { #checks the internet is working
 	if [ `ping -c 1 -s 1000 google.com |grep received | awk -F, '{print $2}' |awk '{print $1}' ` -eq 1 ]
@@ -81,6 +97,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		fixsplash "fix the broken splash after an install" on \
 		bashcompletion "allow bash completition" on \
 		kernelsources "Install kernel sources" on \
+		installicon "Removes install backtrack icon from desktop" on \
+		password "asks for a new password for the system" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	for opt in ${result}
@@ -94,6 +112,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 			fixsplash) : do ; fix-splash ;;
 			bashcompletion) : do ; sed -i '/# enable bash completion in/,+3{/enable bash completion/!s/^#//}' /etc/bash.bashrc ;;
 			kernelsources) : do ; prepare-kernel-sources ; cd /usr/src/linux ; cp -rf include/generated/* include/linux/ ;;
+			installicon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
+			password) : do ; echo "Time to change your password" ; passwd ;;
 		esac
 	done
 }
@@ -134,53 +154,60 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		mz "allows creation of packets" on \
 		scapy "allows creation of packets" on \
 		gcalctool "default gnome calculator" on \
+		gtk-recordmydesktop "allows you to easily record your entire screen" on \
+		mono-runtime "mono runtime tools" on \
+		mono-devel "mono development libraries" off \
+		terminator "terminal emulator with advanced features" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
-	apt-get -y autoclean
+	apt-get -y clean
+	apt-get -y autoremove
 	}
 install_stuff(){ #removes existing packages and replaces them with svn versions
 	dialog --title "Install from SVN"  --yesno "We are now going to remove packages and then replace them with their SVN countertparts. This will allow updating to the latest versions.If this is the first time you haved run this tool you will need to select NO. Do you wish to skip?" 8 60
-		return=$?
-		if [ ${return} == 1 ]
-		then
-			dialog --separate-output --output-fd 2 --title "Convert to SVN" --checklist "What packages do you want to install/convert to SVN installs?" 0 0 0 \
-			wifite "mass wep/wpa cracker" on \
-			w3af "Web Application Attack and Audit Framework" on \
-			openvas "Open Vulnerability Assessment System" on \
-			set "Social engineering Toolkit" on \
-			blindelephant "Web Application Fingerprinter" on \
-			sqlmap "Automatic SQL injection" on \
-			nikto "Web server scanner" on \
-			routerdefense "Cisco auditer" on \
-			pyrit "Install pyrit!" off \
-			fernwificracker "GUI based wifi cracker" on \
-			2> /tmp/answer
-			result=`cat /tmp/answer` && rm /tmp/answer ; clear
-			for opt in ${result}
-			do
-				clear
-				echo "###############################################"
-				echo "Now installing: ${opt}"
-				echo "###############################################"
-				sleep 2
-				case ${opt} in
-					wifite) : do ; i_wifite ;;
-					w3af) : do ; i_w3af ;;
-					openvas) : do ; i_openvas ;;
-					set) : do ; i_set ;;
-					blindelephant) : do ; i_blindelephant ;;
-					sqlmap) : do ; i_sqlmap ;;
-					exploitdb) : do ; i_exploitdb ;;
-					routerdefense) : do ; i_routerdefense ;;
-					pyrit) : do ; i_pyrit ;;
-					fernwificracker) : do ; i_fernwificracker ;;
-				esac
-				sleep 2
-			done
-		else
-				echo "skipped svn install"
-		fi
+	return=$?
+	if [ ${return} == 1 ]
+	then
+		dialog --separate-output --output-fd 2 --title "Convert to SVN" --checklist "What packages do you want to install/convert to SVN installs?" 0 0 0 \
+		wifite "mass wep/wpa cracker" on \
+		w3af "Web Application Attack and Audit Framework" on \
+		openvas "Open Vulnerability Assessment System" on \
+		set "Social engineering Toolkit" on \
+		blindelephant "Web Application Fingerprinter" on \
+		sqlmap "Automatic SQL injection" on \
+		nikto "Web server scanner" on \
+		routerdefense "Cisco auditer" on \
+		pyrit "Install pyrit!" off \
+		fernwificracker "GUI based wifi cracker" on \
+		2> /tmp/answer
+		result=`cat /tmp/answer` && rm /tmp/answer ; clear
+		for opt in ${result}
+		do
+			clear
+			echo "###############################################"
+			echo "Now installing: ${opt}"
+			echo "###############################################"
+			sleep 2
+			case ${opt} in
+				wifite) : do ; i_wifite ;;
+				w3af) : do ; i_w3af ;;
+				openvas) : do ; i_openvas ;;
+				blindelephant) : do ; i_blindelephant ;;
+				sqlmap) : do ; i_sqlmap ;;
+				exploitdb) : do ; i_exploitdb ;;
+				routerdefense) : do ; i_routerdefense ;;
+				pyrit) : do ; i_pyrit ;;
+				fernwificracker) : do ; i_fernwificracker ;;
+				dropbox) : do ; i_dropbox ;;
+			esac
+			sleep 2
+		done
+	else
+		echo "skipped svn install"
+	fi
+	apt-get -y clean
+	apt-get -y autoremove
 }
 update_stuff(){ #updates packages previously converted to svn
 	dialog --separate-output --output-fd 2 --title "Tool Updater" --checklist "What packages do you want to update?" 0 0 0 \
@@ -232,14 +259,25 @@ update_stuff(){ #updates packages previously converted to svn
 			fernwificracker) : do ; u_fernwificracker ;;
 		esac
 		sleep 2
-	done	
+	done
+	apt-get -y clean
+	apt-get -y autoremove	
 }
 goodbye_msg() {
 	dialog --title "bt5-fixit.sh" --msgbox "Updates Complete!
 In the future you can run this command with the -u flag" 10 60
 	clear
 }
-
+help_msg() { # help message
+	clear
+	echo -e "Usage: $0 [options]
+ Options:
+  -u : Update packages (only use me after you have run run normally)
+  -h : This help message!
+ Example:
+        $0 fiu"
+        exit 1
+}
 ### Installers for each program ########################################################################################
 i_wifite() {
 	cd /pentest/wireless/
@@ -303,6 +341,19 @@ i_fernwificracker() {
 	svn checkout http://fern-wifi-cracker.googlecode.com/svn/Fern-Wifi-Cracker/
 	chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py
 	}
+i_dropbox(){
+	if [ "`dpkg -s nautilus-dropbox | grep Status`" != "Status: install ok installed" ]
+	then
+		wget -N http://linux.dropbox.com/packages/nautilus-dropbox_0.6.8_i386.deb
+		dpkg -i nautilus-dropbox_0.6.8_i386.deb
+		nautilus --quit #restart nautilus
+		dropbox start -i #run gui installer
+		dialog --title "DropBox Setup" --msgbox "Click OK when Dropbox setup is complete" 8 60
+		clear
+		dropbox autostart y #already by default, just to be sure
+		rm nautilus-dropbox_0.6.8_i386.deb
+	fi
+}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf3() { /pentest/exploits/framework3/msfupdate ; }
@@ -340,26 +391,17 @@ u_nmap() { wget http://nmap.org/svn/nmap-os-db -O /usr/local/share/nmap/nmap-os-
 u_fimap() { cd /pentest/web/fimap/ && ./fimap.py --update-def ;}
 u_fernwificracker() { svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py ;}
 
-help_msg() { # help message
-	clear
-	echo -e "Usage: $0 [options]
- Options:
-  -u : Update packages (only use me after you have run run normally)
-  -h : This help message!
- Example:
-        $0 fiu"
-        exit 1
-}
+
 
 main(){ #default block of code
 startdir=`pwd` ; cd /tmp/
 if [ "$#" == 0 ]
 then # default run to include everything
-	welcome_msg ;netcheck; extra_repositories; configuration_stuff; missing_stuff; install_stuff; update_stuff; goodbye_msg
+	welcome_msg; rootcheck; netcheck; extra_repositories; configuration_stuff; missing_stuff; install_stuff; update_stuff; goodbye_msg
 else # only run me if i recieve a command line value
 	while getopts "uh" execute; do
 		case ${execute} in
-			u) welcome_msg ; netcheck; update_stuff; goodbye_msg ;;
+			u) welcome_msg; rootcheck; netcheck; update_stuff; goodbye_msg ;;
 			h) help_msg ;;
 			?) help_msg ;;
 		esac
