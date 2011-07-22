@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.2" #July/2011
+version="1.3" #July/2011
 # Changelog:
+# v1.3 - Added clear after diaog and changes openvas setup message
 # v1.2 - Added mz, scapy, FernWifiCracker
 # v1.1 - Added -u flag to allow skipping to updates function
 # v1.0 - Official Release
@@ -44,6 +45,7 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 	then
 		dialog --title "Extra Repositiories"  --yesno "We are now going to install extra repositories and update from them in order for this tool to function. Do you want to continue?" 8 60
 		return=$?
+		clear
 		if [ ${return} == 1 ]
 		then
 			dialog --title "EPIC FAIL" --msgbox "If you're worried about adding extra repo's please check the code to see which ones are added, the function is called extra_repositories funily enough..." 8 60
@@ -131,6 +133,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		fwbuilder "allows creation/import of firewall rulesets" on \
 		mz "allows creation of packets" on \
 		scapy "allows creation of packets" on \
+		gcalctool "default gnome calculator" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
@@ -253,15 +256,15 @@ i_w3af() {
 	cp /tmp/backtrack-w3af-console.desktop /usr/share/applications/. 
 	cp /tmp/w3af.desktop /usr/share/applications/. ; }
 i_openvas() {
+	apt-get install -y openvas-scanner
 	dialog --title "OpenVAS install" \
-	--msgbox "You are about to install OpenVAS. These are the install instructions, read them!
+	--msgbox "You are about to setup OpenVAS. These are the setup instructions, read them!
 During install a certificate will be created - Just press [Enter] 7 times
 Enter the username - most people use root[Enter]
 Tell OpenVas you want to use a password - Just press [Enter]
 Enter the password - most people use toor
 Enter blank rules if you wish - Ctrl-D when done
 Tell OpenVas you're happy with the settings - Just press [Enter]" 20 70
-	apt-get install -y openvas-scanner
 	openvas-mkcert
 	openvas-adduser  
 	}
