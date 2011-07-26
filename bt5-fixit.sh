@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.4" #July/2011
+version="1.5" #July/2011
 # Changelog:
+# v1.5 - Added deluge bittorent client and jockey-gtk for driver installations
 # v1.4 - BRUTEFORCE recommended adding the following:
 #			removal of istall icon
 #			changing of password
@@ -97,23 +98,25 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		fixsplash "fix the broken splash after an install" on \
 		bashcompletion "allow bash completition" on \
 		kernelsources "Install kernel sources" on \
-		installicon "Removes install backtrack icon from desktop" on \
+		RemoveInstallIcon "Removes install backtrack icon from desktop" on \
 		password "asks for a new password for the system" on \
+		missing-drivers "allows easy install of nVidia, AMD and Wireless Drivers" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	for opt in ${result}
 	do
 		clear
 		echo "###############################################"
-		echo "Now running ${opt} changes"
+		echo "Now running ${opt} "
 		echo "###############################################"
 		sleep 2
 		case ${opt} in
 			fixsplash) : do ; fix-splash ;;
-			bashcompletion) : do ; sed -i '/# enable bash completion in/,+3{/enable bash completion/!s/^#//}' /etc/bash.bashrc ;;
+			bashcompletion) : do ; sed -i '/# enable bash completion in/,+3{/enable bash completion/!s/^#//}' /etc/bash.bashrc ; echo "Bash Completion enabled" ;;
 			kernelsources) : do ; prepare-kernel-sources ; cd /usr/src/linux ; cp -rf include/generated/* include/linux/ ;;
-			installicon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
+			RemoveInstallIcon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
 			password) : do ; echo "Time to change your password" ; passwd ;;
+			missing-drivers) : do ; apt-get -y install jockey-gtk ;;
 		esac
 		sleep 2
 	done
@@ -159,6 +162,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		mono-runtime "mono runtime tools" on \
 		mono-devel "mono development libraries" off \
 		terminator "terminal emulator with advanced features" on \
+		deluge "bittorent client" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
