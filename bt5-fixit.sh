@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.5" #July/2011
+version="1.6" #Aug/2011
 # Changelog:
+# v1/6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
 # v1.5 - Added deluge bittorent client and jockey-gtk for driver installations
 # v1.4 - BRUTEFORCE recommended adding the following:
 #			removal of istall icon
@@ -101,6 +102,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		RemoveInstallIcon "Removes install backtrack icon from desktop" on \
 		password "asks for a new password for the system" on \
 		missing-drivers "allows easy install of nVidia, AMD and Wireless Drivers" on \
+		ssh-keys "creates ssh keys for ssh server" on \
+		wicd "configure usage of wicd" off \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	for opt in ${result}
@@ -117,6 +120,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 			RemoveInstallIcon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
 			password) : do ; echo "Time to change your password" ; passwd ;;
 			missing-drivers) : do ; apt-get -y install jockey-gtk ;;
+			ssh-keys) : do ; sshd-generate ;;
+			wicd) : do ; dpkg-reconfigure wicd ; update-rc.d wicd defaults ;;
 		esac
 		sleep 2
 	done
@@ -163,6 +168,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		mono-devel "mono development libraries" off \
 		terminator "terminal emulator with advanced features" on \
 		deluge "bittorent client" on \
+		netwox "network toolbox" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
@@ -206,6 +212,9 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				pyrit) : do ; i_pyrit ;;
 				fernwificracker) : do ; i_fernwificracker ;;
 				dropbox) : do ; i_dropbox ;;
+				tiger) : do ; i_tiger ;;
+				creepy) : do ; i_creepy ;;
+				arduino) : do ; i_arduino ;;
 			esac
 			sleep 2
 		done
@@ -360,6 +369,9 @@ i_dropbox(){
 		rm nautilus-dropbox_0.6.8_i386.deb
 	fi
 }
+i_tiger(){apt-get install -y tiger ;}
+i_creepy(){apt-get install -y creepy ;}
+i_arduino(){apt-get install -y arduino ;}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf3() { /pentest/exploits/framework3/msfupdate ; }
