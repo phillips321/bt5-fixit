@@ -6,9 +6,10 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.6" #Aug/2011
+version="1.6.1" #Aug/2011
 # Changelog:
-# v1/6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
+# v1.6.1 - Fixed slight mistake in latest addition, Whoops!
+# v1.6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
 # v1.5 - Added deluge bittorent client and jockey-gtk for driver installations
 # v1.4 - BRUTEFORCE recommended adding the following:
 #			removal of istall icon
@@ -369,9 +370,9 @@ i_dropbox(){
 		rm nautilus-dropbox_0.6.8_i386.deb
 	fi
 }
-i_tiger(){apt-get install -y tiger ;}
-i_creepy(){apt-get install -y creepy ;}
-i_arduino(){apt-get install -y arduino ;}
+i_tiger(){ apt-get -y install tiger ;}
+i_creepy(){ apt-get -y install creepy ;}
+i_arduino(){ apt-get -y install arduino ;}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf3() { /pentest/exploits/framework3/msfupdate ; }
