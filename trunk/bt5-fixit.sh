@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.6.1" #Aug/2011
+version="1.7" #Aug/2011
 # Changelog:
+# v1.7 - Added tsclient, moved dropbox location and changed default option to No
 # v1.6.1 - Fixed slight mistake in latest addition, Whoops!
 # v1.6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
 # v1.5 - Added deluge bittorent client and jockey-gtk for driver installations
@@ -170,6 +171,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		terminator "terminal emulator with advanced features" on \
 		deluge "bittorent client" on \
 		netwox "network toolbox" on \
+		tsclient "Terminal Servers Client" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
@@ -177,7 +179,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 	apt-get -y autoremove
 	}
 install_stuff(){ #removes existing packages and replaces them with svn versions
-	dialog --title "Install from SVN"  --yesno "We are now going to remove packages and then replace them with their SVN countertparts. This will allow updating to the latest versions.If this is the first time you haved run this tool you will need to select NO. Do you wish to skip?" 8 60
+	dialog --title "Install from SVN"  --yesno "We are now going to install packages from svn source. This will allow updating to the latest versions. Do you want to continue?" 8 60
 	return=$?
 	if [ ${return} == 1 ]
 	then
@@ -192,7 +194,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		routerdefense "Cisco auditer" on \
 		pyrit "Install pyrit!" off \
 		fernwificracker "GUI based wifi cracker" on \
-		dropbox "Install Dropbox" on \
+		dropbox "Install Dropbox" off \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
