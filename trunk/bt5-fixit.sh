@@ -6,8 +6,11 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.7" #Aug/2011
+version="1.8" #Aug/2011
 # Changelog:
+# v1.8 - Added cisco-decrypt tool for pcf encrypred passwords (cisco client vpn)
+#      - Added arduino, teensy and teensyduino
+#      - Added missing tiger, creepy and arduino to install options
 # v1.7 - Added tsclient, moved dropbox location and changed default option to No
 # v1.6.1 - Fixed slight mistake in latest addition, Whoops!
 # v1.6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
@@ -195,6 +198,10 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		pyrit "Install pyrit!" off \
 		fernwificracker "GUI based wifi cracker" on \
 		dropbox "Install Dropbox" off \
+		tiger "tiger" on \
+		creepy "creepy" on \
+		arduino "Arduino based tools (includes teensy addons)" off \
+		cisco-decrypt "Allows decode of pcf password hashes" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -218,6 +225,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				tiger) : do ; i_tiger ;;
 				creepy) : do ; i_creepy ;;
 				arduino) : do ; i_arduino ;;
+				cisco-decrypt) : do ; i_cisco-decrypt ;;
 			esac
 			sleep 2
 		done
@@ -374,7 +382,36 @@ i_dropbox(){
 }
 i_tiger(){ apt-get -y install tiger ;}
 i_creepy(){ apt-get -y install creepy ;}
-i_arduino(){ apt-get -y install arduino ;}
+i_arduino(){
+	apt-get install avr-libc make ant
+	cd /pentest/misc/
+	wget http://arduino.googlecode.com/files/arduino-0022.tgz 
+	tar -zxvf arduino-0022.tgz
+	rm arduino-0022.tgz
+	cd /etc/udev/rules.d/
+	wget http://www.pjrc.com/teensy/49-teensy.rules
+	cd /pentest/misc/arduino-0022/
+	wget http://www.pjrc.com/teensy/teensy.gz
+	gzip -d teensy.gz 
+	chmod +x teensy
+	wget http://www.pjrc.com/teensy/teensyduino.32bit
+	chmod +x teensyduino.32bit
+	dialog --title "Teensyduino Install" \
+	--msgbox "You are about to setup teensyduino. Read this before you proceed.
+Instructions:
+	Click Next
+	Change the install folder to /pentest/misc/arduino-0022/
+	Click Next
+	Select All of the tools
+	Click Next and then Install	" 10 70
+	/pentest/misc/arduino-0022/teensyduino.32bit
+	clear
+	}
+i_cisco-decrypt() {
+	cd /pentest/passwords/
+	wget http://www.unix-ag.uni-kl.de/~massar/soft/cisco-decrypt.c
+	gcc -Wall -o cisco-decrypt cisco-decrypt.c $(libgcrypt-config --libs --cflags)
+	}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf3() { /pentest/exploits/framework3/msfupdate ; }
