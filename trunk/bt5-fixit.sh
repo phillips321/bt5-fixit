@@ -406,6 +406,7 @@ Instructions:
 	Click Next and then Install	" 10 70
 	/pentest/misc/arduino-0022/teensyduino.32bit
 	clear
+	rm /pentest/misc/arduino-0022/teensyduino.32bit
 	}
 i_cisco-decrypt() {
 	cd /pentest/passwords/
