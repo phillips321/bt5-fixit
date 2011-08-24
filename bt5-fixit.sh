@@ -184,7 +184,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 install_stuff(){ #removes existing packages and replaces them with svn versions
 	dialog --title "Install from SVN"  --yesno "We are now going to install packages from svn source. This will allow updating to the latest versions. Do you want to continue?" 8 60
 	return=$?
-	if [ ${return} == 1 ]
+	if [ ${return} == 0 ]
 	then
 		dialog --separate-output --output-fd 2 --title "Convert to SVN" --checklist "What packages do you want to install/convert to SVN installs?" 0 0 0 \
 		wifite "mass wep/wpa cracker" on \
