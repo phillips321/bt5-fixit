@@ -383,7 +383,7 @@ i_dropbox(){
 i_tiger(){ apt-get -y install tiger ;}
 i_creepy(){ apt-get -y install creepy ;}
 i_arduino(){
-	apt-get install avr-libc make ant
+	apt-get -y install avr-libc make ant
 	cd /pentest/misc/
 	wget http://arduino.googlecode.com/files/arduino-0022.tgz 
 	tar -zxvf arduino-0022.tgz
