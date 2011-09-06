@@ -42,7 +42,6 @@ done
 echo "You now have mounted shares at `pwd`/nfs/"
 ls `pwd`/nfs/
 
-
 read -p "Feel free to browse the shares, when you are ready to unmount press enter"
 echo "unmounting the following:"
 mount | grep ${target} | cut -d" " -f1
@@ -62,6 +61,8 @@ done
 #echo "deleting nfs directory"
 #echo "rm -rf `pwd`/nfs"
 #rm -rf `pwd`/nfs
+
+cat nfs_*.txt | grep "passwd\|shadow"
 
 exit 0
 
