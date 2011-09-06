@@ -8,6 +8,7 @@
 #__________________________________________________________
 version="1.8" #Aug/2011
 # Changelog:
+# v1.9 - Added tree command
 # v1.8 - Added cisco-decrypt tool for pcf encrypred passwords (cisco client vpn)
 #      - Added arduino, teensy and teensyduino
 #      - Added missing tiger, creepy and arduino to install options
@@ -175,6 +176,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		deluge "bittorent client" on \
 		netwox "network toolbox" on \
 		tsclient "Terminal Servers Client" on \
+		tree "Linux tree command" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
