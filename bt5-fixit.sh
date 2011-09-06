@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="1.8" #Aug/2011
+version="2.0" #Sept/2011
 # Changelog:
+# v2.0 - Added meld program (quick visual diff between 2/3 files)
 # v1.9 - Added tree command
 # v1.8 - Added cisco-decrypt tool for pcf encrypred passwords (cisco client vpn)
 #      - Added arduino, teensy and teensyduino
@@ -177,6 +178,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		netwox "network toolbox" on \
 		tsclient "Terminal Servers Client" on \
 		tree "Linux tree command" on \
+		meld "Quick way to show a visual diff between 2/3 files" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
