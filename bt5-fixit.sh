@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.0" #Sept/2011
+version="2.1" #Sept/2011
 # Changelog:
+# v2.1 - Added version 7.0 of hydra (and xhydra)
 # v2.0 - Added meld program (quick visual diff between 2/3 files)
 # v1.9 - Added tree command
 # v1.8 - Added cisco-decrypt tool for pcf encrypred passwords (cisco client vpn)
@@ -206,6 +207,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		creepy "creepy" on \
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
+		hydra "Latest v7.0 of hydra including xhydra" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -230,6 +232,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				creepy) : do ; i_creepy ;;
 				arduino) : do ; i_arduino ;;
 				cisco-decrypt) : do ; i_cisco-decrypt ;;
+				hydra) : do ; i_hydra ;;
 			esac
 			sleep 2
 		done
@@ -416,6 +419,17 @@ i_cisco-decrypt() {
 	cd /pentest/passwords/
 	wget http://www.unix-ag.uni-kl.de/~massar/soft/cisco-decrypt.c
 	gcc -Wall -o cisco-decrypt cisco-decrypt.c $(libgcrypt-config --libs --cflags)
+	}
+i_hydra() {
+	cd /tmp
+	apt-get -y purge hydra xhydra
+	apt-get -y install libssh-dev libpcre3-dev libpq-dev libsvn-dev libaprutil1-dev libapr1-dev libmysqlclient-dev libncp-dev libocc0-dev pkg-config libgtk2.0-dev libcln-dev
+	wget http://www.thc.org/releases/hydra-7.0-src.tar.gz
+	tar -zxvf hydra-7.0-src.tar.gz
+	cd hydra-7.0-src
+	./configure -DWITH_SSH1=On
+	make
+	make install
 	}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
