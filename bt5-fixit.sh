@@ -6,8 +6,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.1" #Sept/2011
+version="2.2" #Sept/2011
 # Changelog:
+# v2.2 - Plenty of spelling mistakes now fixed. Cheers Rich Hicks
 # v2.1 - Added version 7.0 of hydra (and xhydra)
 # v2.0 - Added meld program (quick visual diff between 2/3 files)
 # v1.9 - Added tree command
@@ -69,14 +70,14 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 	grep fwbuilder /etc/apt/sources.list ; addrepos=$?
 	if [ ${addrepos} = "1" ] #check to see if repos have already been added
 	then
-		dialog --title "Extra Repositiories"  --yesno "We are now going to install extra repositories and update from them in order for this tool to function. Do you want to continue?" 8 60
+		dialog --title "Extra Repositories"  --yesno "We are now going to install extra repositories and update from them in order for this tool to function. Do you want to continue?" 8 60
 		return=$?
 		clear
 		if [ ${return} == 1 ]
 		then
-			dialog --title "EPIC FAIL" --msgbox "If you're worried about adding extra repo's please check the code to see which ones are added, the function is called extra_repositories funily enough..." 8 60
+			dialog --title "EPIC FAIL" --msgbox "If you're worried about adding extra repo's please check the code to see which ones are added, the function is called extra_repositories funnily enough..." 8 60
 			clear
-			echo "If you're worried about adding extra repo's please check the code to see which ones are added, the function is called extra_repositories funily enough"
+			echo "If you're worried about adding extra repo's please check the code to see which ones are added, the function is called extra_repositories funnily enough"
 			exit 1
 		fi
 		apt-get install -y python-software-properties
@@ -105,7 +106,7 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 configuration_stuff(){ #changes small things that have been overlooked in BackTrack
 	dialog --title "Configuration Changes Selection" --separate-output --output-fd 2 --checklist "What minor changes do you wish to make?" 0 0 0 \
 		fixsplash "fix the broken splash after an install" on \
-		bashcompletion "allow bash completition" on \
+		bashcompletion "allow bash completion" on \
 		kernelsources "Install kernel sources" on \
 		RemoveInstallIcon "Removes install backtrack icon from desktop" on \
 		password "asks for a new password for the system" on \
@@ -144,14 +145,14 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		synaptic "gui for aptitude" on \
 		geany "Text editor for programmers" on \
 		netsed "changes network packets off the fly" on \
-		arp-scan "allows anumeration of devices off subnet" on \
-		shutter "great screenshot untility for gnome" on \
+		arp-scan "allows enumeration of devices off subnet" on \
+		shutter "great screenshot utility for gnome" on \
 		gnome-web-photo "allows screenshots to be taken of URLs" on \
 		vino "Gnome VNC server" on \
 		etherape "grpahical network monitor" on \
 		gufw "gnome frontend for UbuntuFireWall" on \
 		htop "like top but more functions" on \
-		libssl-dev "SSL develop[ment libraries" on \
+		libssl-dev "SSL development libraries" on \
 		scapy "packet manipulation program" on \
 		python-dev "python development libraries" on \
 		chromium-codecs-ffmpeg-extra "chromium extras" on \
@@ -305,7 +306,7 @@ help_msg() { # help message
 	clear
 	echo -e "Usage: $0 [options]
  Options:
-  -u : Update packages (only use me after you have run run normally)
+  -u : Update packages (only use me after you have run the script normally)
   -h : This help message!
  Example:
         $0 fiu"
@@ -488,5 +489,3 @@ cd ${startdir}
 }
 main $*
 exit 0
-
-# 
