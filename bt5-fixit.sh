@@ -1,13 +1,15 @@
 #!/bin/bash
 #__________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
+#		Ari Davies  (kussic@chaos6.net)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings tools on BackTrack5 to bleeding edge 
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.2" #Sept/2011
+version="2.3" #Sept/2011
 # Changelog:
+# v2.3 - Fixed an issue with Google PGP key import & SQLMap installation
 # v2.2 - Plenty of spelling mistakes now fixed. Cheers Rich Hicks
 # v2.1 - Added version 7.0 of hydra (and xhydra)
 # v2.0 - Added meld program (quick visual diff between 2/3 files)
@@ -83,8 +85,8 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 		apt-get install -y python-software-properties
 	    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 4E5E17B5
 		add-apt-repository ppa:chromium-daily/stable
-		wget -q -O – https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-		rm -
+		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+		
 		echo "deb http://packages.fwbuilder.org/deb/stable/ maverick contrib" >> /etc/apt/sources.list
 		wget http://www.fwbuilder.org/PACKAGE-GPG-KEY-fwbuilder.asc && apt-key add PACKAGE-GPG-KEY-fwbuilder.asc
 		rm PACKAGE-GPG-KEY-fwbuilder.asc
@@ -351,7 +353,9 @@ i_blindelephant() {
 i_sqlmap() {
 	cp /usr/share/applications/backtrack-sqlmap.desktop /tmp/.
 	apt-get purge -y sqlmap
+	cd /pentest/web/scanners
 	svn co https://svn.sqlmap.org/sqlmap/trunk/sqlmap sqlmap
+	ln -s /pentest/web/scanners/sqlmap /pentest/database/
 	cp /tmp/backtrack-sqlmap.desktop /usr/share/applications/. ; }
 i_nikto() {
 	cp /usr/share/applications/backtrack-nikto.desktop /tmp/.
