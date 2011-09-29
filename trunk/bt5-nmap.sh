@@ -214,8 +214,8 @@ f_gwp(){
 		for i in `cat amap.ssl.txt`
 		do
 			HTTPOUT="`echo "${i}" | sed -e s/:/_/g`" 
-			echo "MESSAGE: now taking photo of https://${i} and outputting as ${HTTPOUT}.png"
-			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -t 20 -w 1024 -m photo -f --format=png https://${i} ${HTTPOUT}.png" &
+			echo "MESSAGE: now taking photo of https://${i} and outputting as ${HTTPOUT}_https.png"
+			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -t 20 -w 1024 -m photo -f --format=png https://${i} ${HTTPOUT}_https.png" &
 			while [ `ps -Aef --cols 200 | grep GNOME | grep xterm | wc -l` -ge ${THREADS} ]
 			do
 				sleep 5
@@ -231,8 +231,8 @@ f_gwp(){
 		for i in `cat amap.http.txt`
 		do
 			HTTPOUT="`echo "${i}" | sed -e s/:/_/g`" 
-			echo "MESSAGE: now taking photo of http://${i} and outputting as ${HTTPOUT}.png"
-			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -m photo -f --format=png ${i} ${HTTPOUT}.png" &
+			echo "MESSAGE: now taking photo of http://${i} and outputting as ${HTTPOUT}_http.png"
+			xterm -title "${i} GNOME-WEB-PHOTO" -e "gnome-web-photo -m photo -f --format=png ${i} ${HTTPOUT}_http.png" &
 			while [ `ps -Aef --cols 200 | grep GNOME | grep xterm | wc -l` -ge ${THREADS} ]
 			do
 				sleep 5
