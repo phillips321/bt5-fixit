@@ -7,8 +7,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.3" #Sept/2011
+version="2.3" #Nov/2011
 # Changelog:
+# v2.4 - Fixed framework3 to now be framework and turned nmap fingers to default to off
 # v2.3 - Fixed an issue with Google PGP key import & SQLMap installation
 # v2.2 - Plenty of spelling mistakes now fixed. Cheers Rich Hicks
 # v2.1 - Added version 7.0 of hydra (and xhydra)
@@ -247,7 +248,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 }
 update_stuff(){ #updates packages previously converted to svn
 	dialog --separate-output --output-fd 2 --title "Tool Updater" --checklist "What packages do you want to update?" 0 0 0 \
-		msf3 "update me?" on \
+		msf "update me?" on \
 		w3af "update me?" on \
 		openvas "update me?" on \
 		set "update me?" on \
@@ -261,7 +262,7 @@ update_stuff(){ #updates packages previously converted to svn
 		warvox "update me?" on \
 		aircrack "update me?" on \
 		giskismet "update me?" on \
-		nmap "update nmap fingerprints?" on \
+		nmap "update nmap fingerprints?" off \
 		fimap "update me?" on \
 		wifite "update me?" on \
 		fernwificracker "update me?" on \
@@ -276,7 +277,7 @@ update_stuff(){ #updates packages previously converted to svn
 		sleep 2
 		case ${opt} in
 			wifite) : do ; u_wifite ;;
-			msf3) : do ; u_msf3 ;;
+			msf) : do ; u_msf ;;
 			w3af) : do ; u_w3af ;;
 			openvas) : do ; u_openvas ;;
 			set) : do ;u_set ;;
@@ -438,7 +439,7 @@ i_hydra() {
 	}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
-u_msf3() { /pentest/exploits/framework3/msfupdate ; }
+u_msf() { /pentest/exploits/framework/msfupdate ; }
 u_w3af() { svn up /pentest/web/w3af/ ;}
 u_openvas() { openvas-nvt-sync ;}
 u_set() { cd /pentest/exploits/set/ ; ./set-update ;}
