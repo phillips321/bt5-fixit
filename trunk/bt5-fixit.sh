@@ -7,8 +7,17 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.3" #Nov/2011
+version="2.5" #Nov/2011
 # Changelog:
+# v2.5 - Added many new fixes by recommendations of Michael Haberland (see below)
+#			Fixed pulseaudio so that sound now works by default
+#			Installed latest version of ophcrack v3.3.1
+#			Added apt alias for apt-get like in Mint
+#			Added option to auto login as root
+#			Added option to auto startx after root login
+#			Improved gnome-network-manager installation
+#			Fixed metasploit updater
+#			Added UPX-packing and signature stealing to fast-track
 # v2.4 - Fixed framework3 to now be framework and turned nmap fingers to default to off
 # v2.3 - Fixed an issue with Google PGP key import & SQLMap installation
 # v2.2 - Plenty of spelling mistakes now fixed. Cheers Rich Hicks
@@ -116,6 +125,11 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		missing-drivers "allows easy install of nVidia, AMD and Wireless Drivers" on \
 		ssh-keys "creates ssh keys for ssh server" on \
 		wicd "configure usage of wicd" off \
+		fixsound "make sure pulseaudio starts with gnome" on \
+		aptalias "create alias for APT (Like Linux Mint)" on \
+		autologin "auto login as root" off \
+		autostartx "auto startx after login" off \
+		gnomenetworkmanager "gnome network manager in taskbar(top right)" off \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	for opt in ${result}
@@ -134,6 +148,11 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 			missing-drivers) : do ; apt-get -y install jockey-gtk ;;
 			ssh-keys) : do ; sshd-generate ;;
 			wicd) : do ; dpkg-reconfigure wicd ; update-rc.d wicd defaults ;;
+			fixsound) : do ; cd /root/.config/ ; mkdir autostart ; cd autostart ; touch pulseaudio.desktop ; echo -e "\n[Desktop Entry]\nType=Application\nExec=/usr/bin/pulseaudio\nHidden=false\nNoDisplay=false\nX-GNOME-Autostart-enabled=true\nName[en_US]=PulseAudio Sound System\nName=PulseAudio Sound System\nComment[en_US]=Start the PulseAudio Sound System\nComment=Start the PulseAudio Sound System" > pulseaudio.desktop ;;
+			aptalias) : do ; touch /root/.bash_aliases ; echo alias apt='apt-get' > /root/.bash_aliases ;;
+			autologin) : do ; apt-get -y install rungetty ; sed -i 's/exec /#exec /' /etc/init/tty1.conf ; echo exec /sbin/rungetty tty1 --autologin root >> /etc/init/tty1.conf ;;
+			autostartx) : do ; touch /root/.bash_profile ; echo startx > /root/.bash_profile ;;
+			gnomenetworkmanager) : do ; i_gnomenetworkmanager ;;
 		esac
 		sleep 2
 	done
@@ -141,7 +160,6 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 missing_stuff(){ #installs software that is missing that many people rely on!
 	dialog --separate-output --output-fd 2 --title "Missing Tools" --checklist "What do you want to add to BackTrack? (This is missing stuff that for some reason they didn't include!)" 0 0 0 \
 		build-essential "contains the tools required for building software" on \
-		network-manager-gnome "gnome network manager in taskbar(top right)" off \
 		linux-headers "includes the header files for the kernel" on \
 		linux-source "includes the source files for the kernel" on \
 		filezilla "an FTP client" on \
@@ -212,6 +230,8 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
 		hydra "Latest v7.0 of hydra including xhydra" on \
+		msfupdater "fixes metasploit updater" on \
+		fasttrack "add UPX-packing and signature stealing to fasttrack" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -237,6 +257,9 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				arduino) : do ; i_arduino ;;
 				cisco-decrypt) : do ; i_cisco-decrypt ;;
 				hydra) : do ; i_hydra ;;
+				ophcrack) : do ; i_ophcrack ;;
+				msfupdater) : do ; i_msfupdater ;;
+				fasttrack) : do ; apt-get install -y python-pefile upx ;; 
 			esac
 			sleep 2
 		done
@@ -437,6 +460,34 @@ i_hydra() {
 	make
 	make install
 	}
+i_gnomenetworkmanager(){
+	apt-get -y install network-manager-gnome
+	mv /etc/network/interfaces /etc/network/interfaces.ori
+	echo "auto lo" > /etc/network/interfaces && echo "iface lo inet loopback" >> /etc/network/interfaces
+	service network-manager start
+	nm-applet &
+}
+i_ophcrack(){
+	apt-get -y remove ophcrack
+	apt-get -y install libssl-dev libqt4-dev
+	cd /pentest/passwords
+	wget http://sourceforge.net/projects/ophcrack/files/ophcrack/3.3.1/ophcrack-3.3.1.tar.bz2
+	tar -xjf ophcrack-3.3.1.tar.bz2
+	rm -rf ophcrack-3.3.1.tar.bz2
+	mv ophcrack*/ ophcrack/
+	cd ophcrack/
+	./configure
+	make
+	make install
+	rm -r /pentest/passwords/ophcrack
+}
+i_msfupdater(){ #Fix for errors in Metasploit-updater
+	cd /opt/framework/lib
+	sudo mv libcrypto.so.0.9.8 libcrypto.so.0.9.8.bak
+	sudo mv libssl.so.0.9.8 libssl.so.0.9.8.bak
+	sudo ln -s /usr/lib/libcrypto.so.0.9.8 ./
+	sudo ln -s /usr/lib/libssl.so.0.9.8 ./
+}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf() { /pentest/exploits/framework/msfupdate ; }
