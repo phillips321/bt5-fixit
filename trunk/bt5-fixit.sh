@@ -465,7 +465,6 @@ i_gnomenetworkmanager(){
 	mv /etc/network/interfaces /etc/network/interfaces.ori
 	echo "auto lo" > /etc/network/interfaces && echo "iface lo inet loopback" >> /etc/network/interfaces
 	service network-manager start
-	nm-applet &
 }
 i_ophcrack(){
 	apt-get -y remove ophcrack
