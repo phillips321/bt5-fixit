@@ -2,6 +2,7 @@
 #__________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
 #		Ari Davies  (kussic@chaos6.net)
+#		Rich Hicks  (r.hicks@gmail.com)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings tools on BackTrack5 to bleeding edge 
 #               and adds missing tools
