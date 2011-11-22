@@ -1,10 +1,11 @@
 #!/bin/bash
 #__________________________________________________________
 # Author:     phillips321 forum.gnacktrack.co.uk
+#							Rich Hicks	r.hicks@gmail.com
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
 # Released:   www.gnacktrack.co.uk
-  version=1.2
+  version=1.3
 # Dependencies:
 # 			nmap
 # 			sslscan
@@ -19,6 +20,7 @@
 # 			Allow changing of THREADS on fly by reading THREADS from file
 #
 # ChangeLog:
+#			v1.3 fixed some issues relating to the directory creation and the script after the initial nmap.
 #			v1.2 added timeout and width option to gnome-web-photo
 #			v1.1 added UDP custom and added NMAPUDP command string as f_uservariable()
 #			v1.0 Migrated from matts-nmap.sh --> gt-nmap.sh and improved layout using functions
@@ -114,9 +116,8 @@ f_numberoftargets(){ #counts number of targets in targets.txt
 	echo "MESSAGE: Found ${NUMBER} targets to scan"
 }
 f_createdirectory(){ #makes the directory
-	STARTDIR=`pwd`
-	mkdir "${STARTDIR}/${1}"
-	cp targets.txt ${STARTDIR}/${1}/.
+	mkdir -p "${1}"
+	cp targets.txt "${1}/"
 }
 f_nmapscans(){	#performs loops of nmap scans
 	echo "MESSAGE: Starting Scan with ${THREADS} threads"
@@ -152,7 +153,7 @@ f_nmapscans(){	#performs loops of nmap scans
 	echo "MESSAGE: NMap Scanning Complete"
 }
 f_amapscans(){
-	cd "${STARTDIR}/${DIRECTORY}"
+	cd "${DIRECTORY}"
 	for i in `ls *.gnmap | sed -e "s/.gnmap//"`
 	do
 		xterm -title "${i} AMAP" -e "amap -i ${i}.gnmap -o ${i}.amap | tee -a amap_full.txt" &
@@ -171,12 +172,12 @@ f_amapscans(){
 	cat amap_full.txt | cut -d" " -f3,4,5 | grep matches | sort -n | uniq > amap.txt
 	cat amap.txt | grep http | cut -d"/" -f 1 | sort | uniq > amap.http.txt
 	cat amap.txt | grep ssl | cut -d"/" -f 1 | sort | uniq > amap.ssl.txt
-	cd "${STARTDIR}/.."
+	cd -
 	echo "MESSAGE: Amaping Complete"
 	sleep 5
 }
 f_sslscans(){
-	cd "${STARTDIR}/${DIRECTORY}"
+	cd "${DIRECTORY}"
 	if [ -s amap.ssl.txt ] 
 	then
 		cat amap.ssl.txt
@@ -202,12 +203,13 @@ f_sslscans(){
 		echo "MESSAGE: sslscan will not run - no ssl ports found using amap"
 	fi	
 	sleep 5
-	cd "${STARTDIR}/.."
+#	cd "${SITARTDIR}/.."
+	cd -
 	
 
 }
 f_gwp(){
-	cd "${STARTDIR}/${DIRECTORY}"
+	cd "${DIRECTORY}"
 	if [ -s amap.ssl.txt ] 
 	then
 		cat amap.ssl.txt
@@ -248,10 +250,10 @@ f_gwp(){
 		sleep 10
 	done
 	sleep 5
-	cd "${STARTDIR}/.."
+	cd -
 }
 f_cleanup(){
-	cd "${STARTDIR}/${DIRECTORY}"
+	cd "${DIRECTORY}"
 	for i in `ls *.png`
 	do
 		iSIZE=`stat -c %s ${i}`
@@ -263,7 +265,7 @@ f_cleanup(){
 	done
 }
 f_displayresults(){
-	cd "${STARTDIR}/${DIRECTORY}"
+	cd "${DIRECTORY}"
 	cat *p.nmap | grep "scan\ report\ for\|Interesting\|open\|---------------------------------------------" | grep -v "OSScan" | grep -v "filtered" > open_ports.txt
 	xterm -title "OpenPorts from ${DIRECTORY}" -e "grep -E --color=always '.*(ssh|rdp|ssl|http|telnet|https|sslv2|mail|smtp|snmp|oracle|sql|tnls|ftp|sftp).*|' open_ports.txt | less -R" &
 	if [ -s WeakCiphers.txt ]
@@ -273,7 +275,7 @@ f_displayresults(){
 		echo "No weak ciphers found" > WeakCiphers.txt
 		echo "MESSAGE: no weak ciphers found"
 	fi
-	cd "${STARTDIR}/.."
+	cd -
 }
 
 f_uservariables
