@@ -1,7 +1,7 @@
 #!/bin/bash
 #__________________________________________________________
 # Author:     phillips321 contact through phillips321.co.uk
-#						  Rich Hicks	r.hicks@gmail.com
+#						  Rich Hicks	contact through about.me/r.hicks
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
 # Released:   www.phillips321.co.uk
