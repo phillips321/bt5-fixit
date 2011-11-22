@@ -1,10 +1,10 @@
 #!/bin/bash
 #__________________________________________________________
-# Author:     phillips321 forum.gnacktrack.co.uk
-#							Rich Hicks	r.hicks@gmail.com
+# Author:     phillips321 contact through phillips321.co.uk
+#						  Rich Hicks	r.hicks@gmail.com
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
-# Released:   www.gnacktrack.co.uk
+# Released:   www.phillips321.co.uk
   version=1.3
 # Dependencies:
 # 			nmap
@@ -203,7 +203,6 @@ f_sslscans(){
 		echo "MESSAGE: sslscan will not run - no ssl ports found using amap"
 	fi	
 	sleep 5
-#	cd "${SITARTDIR}/.."
 	cd -
 	
 
