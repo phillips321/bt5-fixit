@@ -5,7 +5,7 @@
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
 # Released:   www.phillips321.co.uk
-  version=1.3
+  version=1.4
 # Dependencies:
 # 			nmap
 # 			sslscan
@@ -20,20 +20,21 @@
 # 			Allow changing of THREADS on fly by reading THREADS from file
 #
 # ChangeLog:
+#			v1.4 fixed the "host alive" check flag and usage.
 #			v1.3 fixed some issues relating to the directory creation and the script after the initial nmap.
 #			v1.2 added timeout and width option to gnome-web-photo
 #			v1.1 added UDP custom and added NMAPUDP command string as f_uservariable()
-#			v1.0 Migrated from matts-nmap.sh --> gt-nmap.sh and improved layout using functions
+#			v1.0 Migrated from bt5-nmap.sh --> gt-nmap.sh and improved layout using functions
 #___________________________________________________________
 
 f_uservariables(){
 	CUSTOMPORTS="21,22,23,80,443,445,3389"  #seperate with a comma e.g. CUSTOMPORTS="21,22,23,80,443,445,3389" 
-	NMAPTCP="nmap -sS -vv -d -A -P0 -n -r -oA"
-	NMAPUDP="nmap -sU -vv -d -A -P0 -n -r -oA"
+	NMAPTCP="nmap -sS -vv -d -A -Pn -n -r -oA"
+	NMAPUDP="nmap -sU -vv -d -A -Pn -n -r -oA"
 
 }
 f_usage(){		#outputs usage information
-		echo "MESSAGE: matts-nmap.sh ${version}"
+		echo "MESSAGE: bt5-nmap.sh ${version}"
 		echo "MESSAGE: Usage: `basename ${0}` [threads max = 99] [big/small/both/custom] [directory]"
 		echo "MESSAGE: # `basename ${0}` 5 small VLANxyz"
 		echo "MESSAGE: if scan size not given i will scan all ports"
@@ -52,7 +53,7 @@ f_yesorno(){	#returns 1 if yes is selected
 f_rootcheck(){	#checks for root and exits if not
 	if [ `echo -n $USER` != "root" ]
 	then
-		echo "MESSAGE: matts-nmap.sh ${VERSION}"
+		echo "MESSAGE: bt5-nmap.sh ${VERSION}"
 		echo "MESSAGE: ERROR: Please run as root!"
 		echo "MESSAGE:"
 		exit 1
