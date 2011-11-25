@@ -51,7 +51,8 @@ version="2.5" #Nov/2011
 # ToDo:
 # - Check if root password is toor (and if it is offer to change it)
 # - Remove duplicate WBarConf from the Applications-->Accessories menu
-# - Add pulseaudio to System-->Prefernces-->Startup Applications
+# - Add dhcp-server
+# - Add volatility 2.0
 welcome_msg() { #Introduction messagebox
 	dialog --title "bt5-fixit.sh" \
 	--msgbox "Authors: phillips321 (matt@phillips321.co.uk)
