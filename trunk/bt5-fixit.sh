@@ -8,8 +8,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.5" #Nov/2011
+version="2.6" #Nov/2011
 # Changelog:
+# v2.6 - Added volatility v2.0, DHCP server and changed a few sources for apt
 # v2.5 - Added many new fixes by recommendations of Michael Haberland (see below)
 #			Fixed pulseaudio so that sound now works by default
 #			Installed latest version of ophcrack v3.3.1
@@ -47,12 +48,10 @@ version="2.5" #Nov/2011
 # v0.3 - Added nipper, fwbuilder and routerdefense
 # v0.2 - Clean with more missing apps
 # v0.1 - First release
-# 
+#
 # ToDo:
 # - Check if root password is toor (and if it is offer to change it)
 # - Remove duplicate WBarConf from the Applications-->Accessories menu
-# - Add dhcp-server
-# - Add volatility 2.0
 welcome_msg() { #Introduction messagebox
 	dialog --title "bt5-fixit.sh" \
 	--msgbox "Authors: phillips321 (matt@phillips321.co.uk)
@@ -99,13 +98,12 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 		add-apt-repository ppa:chromium-daily/stable
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 		
-		echo "deb http://packages.fwbuilder.org/deb/stable/ maverick contrib" >> /etc/apt/sources.list
+		echo "deb http://packages.fwbuilder.org/deb/stable/ lucid contrib" >> /etc/apt/sources.list
 		wget http://www.fwbuilder.org/PACKAGE-GPG-KEY-fwbuilder.asc && apt-key add PACKAGE-GPG-KEY-fwbuilder.asc
 		rm PACKAGE-GPG-KEY-fwbuilder.asc
 		echo "deb http://dl.google.com/linux/chrome/deb/ stable main #Google Stable Source" >> /etc/apt/sources.list
 		wget -O - http://deb.opera.com/archive.key | apt-key add -
 		echo "deb http://deb.opera.com/opera/ lenny non-free #Opera Official Source" >> /etc/apt/sources.list
-		add-apt-repository ppa:sevenmachines/flash
 		add-apt-repository ppa:shutter/ppa
 		add-apt-repository ppa:tualatrix/ppa
 		add-apt-repository ppa:ubuntu-wine/ppa
@@ -204,6 +202,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		tsclient "Terminal Servers Client" on \
 		tree "Linux tree command" on \
 		meld "Quick way to show a visual diff between 2/3 files" on \
+		dhcp3-server "Add a DHCP server to BT5" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
@@ -234,6 +233,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		hydra "Latest v7.0 of hydra including xhydra" on \
 		msfupdater "fixes metasploit updater" on \
 		fasttrack "add UPX-packing and signature stealing to fasttrack" on \
+		volatility "installs version 2.0 of volatility" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -261,7 +261,8 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				hydra) : do ; i_hydra ;;
 				ophcrack) : do ; i_ophcrack ;;
 				msfupdater) : do ; i_msfupdater ;;
-				fasttrack) : do ; apt-get install -y python-pefile upx ;; 
+				fasttrack) : do ; apt-get install -y python-pefile upx ;;
+				volatility) : do ; i_volatility ;; 
 			esac
 			sleep 2
 		done
@@ -488,6 +489,27 @@ i_msfupdater(){ #Fix for errors in Metasploit-updater
 	sudo mv libssl.so.0.9.8 libssl.so.0.9.8.bak
 	sudo ln -s /usr/lib/libcrypto.so.0.9.8 ./
 	sudo ln -s /usr/lib/libssl.so.0.9.8 ./
+}
+i_volatility(){
+	apt-get -y install cmake
+	cd /root/
+	wget https://freddie.witherden.org/tools/libforensic1394/releases/libforensic1394-0.2.tar.gz
+	tar zxvf libforensic1394-0.2.tar.gz
+	cd libforensic1394-0.2/
+	cmake -G"Unix Makefiles"
+	make
+	cp libforensic1394.s* /usr/lib/
+	cd python/
+	python setup.py install
+	rm -rf /pentest/forensics/volatility
+	cd /root/
+	wget https://www.volatilesystems.com/volatility/2.0/volatility-2.0.tar.gz
+	tar zxvf volatility-2.0.tar.gz
+	mv /root/volatility-2.0 /pentest/forensics/volatility
+	sed -i -e ‘s|\./volatility|\./vol\.py -h|’ /usr/share/applications/backtrack-volatility.desktop
+	cd /root/
+	rm -rf libforensic1394*
+	rm -rf volatility-2.0.tar.gz
 }
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
