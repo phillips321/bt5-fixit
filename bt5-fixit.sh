@@ -8,8 +8,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.6" #Nov/2011
+version="2.7" #Dec/2011
 # Changelog:
+# v2.7 - Added tool to get missing repo keys, unetbootin and parcellite. Also added missing repos
 # v2.6 - Added volatility v2.0, DHCP server and changed a few sources for apt
 # v2.5 - Added many new fixes by recommendations of Michael Haberland (see below)
 #			Fixed pulseaudio so that sound now works by default
@@ -104,9 +105,15 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 		echo "deb http://dl.google.com/linux/chrome/deb/ stable main #Google Stable Source" >> /etc/apt/sources.list
 		wget -O - http://deb.opera.com/archive.key | apt-key add -
 		echo "deb http://deb.opera.com/opera/ lenny non-free #Opera Official Source" >> /etc/apt/sources.list
+    echo "deb http://archive.getdeb.net/ubuntu lucid-getdeb apps #GetDeb Software Portal" >> /etc/apt/sources.list.d/getdeb.list
+    wget -q -O- http://archive.getdeb.net/getdeb-archive.key | apt-key add -
 		add-apt-repository ppa:shutter/ppa
 		add-apt-repository ppa:tualatrix/ppa
 		add-apt-repository ppa:ubuntu-wine/ppa
+    add-apt-repository ppa:deluge-team/ppa
+    add-apt-repository ppa:gnome-terminator/ppa
+    add-apt-repository ppa:mozillateam/firefox-stable
+    add-apt-repository ppa:nilarimogard/webupd8
 		apt-get update
 		apt-get -y dist-upgrade
 		apt-get -y autoclean
@@ -203,6 +210,9 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		tree "Linux tree command" on \
 		meld "Quick way to show a visual diff between 2/3 files" on \
 		dhcp3-server "Add a DHCP server to BT5" on \
+    launchpad-getkeys "Manage missing keys for repositories" on \
+    unetbootin "Allows creation of bootable USB drives from ISOs" on \
+    parcellite "Management of the clipboard" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
