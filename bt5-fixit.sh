@@ -2,14 +2,15 @@
 #__________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
 #		Ari Davies  (kussic@chaos6.net)
-#		Rich Hicks  (r.hicks@gmail.com)
+#		Rich Hicks  (about.me/R.Hicks)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings tools on BackTrack5 to bleeding edge 
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.7" #Dec/2011
+version="2.71" #Dec/2011
 # Changelog:
+# v2.71 - Fixed nmap issues with updating.
 # v2.7 - Added tool to get missing repo keys, unetbootin and parcellite. Also added missing repos
 # v2.6 - Added volatility v2.0, DHCP server and changed a few sources for apt
 # v2.5 - Added many new fixes by recommendations of Michael Haberland (see below)
@@ -298,7 +299,7 @@ update_stuff(){ #updates packages previously converted to svn
 		warvox "update me?" on \
 		aircrack "update me?" on \
 		giskismet "update me?" on \
-		nmap "update nmap fingerprints?" off \
+		nmap "update nmap fingerprints?" on \
 		fimap "update me?" on \
 		wifite "update me?" on \
 		fernwificracker "update me?" on \
@@ -554,7 +555,7 @@ u_aircrack() {
 		cd /tmp/
 }
 u_giskismet() { svn up /pentest/wireless/giskismet/ ;}
-u_nmap() { wget http://nmap.org/svn/nmap-os-db -O /usr/local/share/nmap/nmap-os-db ;}
+u_nmap() { nmap --script-updatedb ;}
 u_fimap() { cd /pentest/web/fimap/ && ./fimap.py --update-def ;}
 u_fernwificracker() { svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py ;}
 
