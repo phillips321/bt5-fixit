@@ -8,8 +8,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.71" #Dec/2011
+version="2.8" #Jan/2012
 # Changelog:
+# v2.8 - Added tsocks (tsocks openssl s_client -connect www.target.com:443)
 # v2.71 - Fixed nmap issues with updating.
 # v2.7 - Added tool to get missing repo keys, unetbootin and parcellite. Also added missing repos
 # v2.6 - Added volatility v2.0, DHCP server and changed a few sources for apt
@@ -214,6 +215,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
     launchpad-getkeys "Manage missing keys for repositories" on \
     unetbootin "Allows creation of bootable USB drives from ISOs" on \
     parcellite "Management of the clipboard" on \
+    tsocks "allows connection from terminal to HTTPS" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
