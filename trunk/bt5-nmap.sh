@@ -5,7 +5,7 @@
 # License:    CC BY-SA 3.0
 # Use:        Update several applications
 # Released:   www.phillips321.co.uk
-  version=1.4
+  version=1.5
 # Dependencies:
 # 			nmap
 # 			sslscan
@@ -14,12 +14,12 @@
 # debian users can apt-get install nmap sslscan gnome-web-photo arp-scan
 # 
 # ToDo:
-# 			Delete WeakCiphers if it doesnt contain any weak ciphers
 # 			Use watch instead of looping a #process left message
 # 			Use a nice output to show status of scans and what has been complete
 # 			Allow changing of THREADS on fly by reading THREADS from file
 #
 # ChangeLog:
+#			v1.5 fixed the WeakCiphers file appearing all the time, also added a new targeting function to allow for pre-existing targets.txt files.
 #			v1.4 fixed the "host alive" check flag and usage.
 #			v1.3 fixed some issues relating to the directory creation and the script after the initial nmap.
 #			v1.2 added timeout and width option to gnome-web-photo
@@ -95,20 +95,40 @@ f_outputtargets(){	#cats targets.txt to screen
 f_arpscansubnet(){	#arpscans local subnet
 	arp-scan -l -g | grep . | cut -f1 | grep -v packets |grep -v Interface | grep -v Ending | grep -v Starting > targets.txt
 }
+f_createtargetstxt(){ #Creates a targets.txt file
+	if [[ -f ./targets.txt ]]; then
+		echo -n "Message: Edit Existing? (Yes/No) : "
+		f_yesorno \
+			&& (echo "Message: Now arp-scanning current subnet"; f_arpscansubnet) \
+			|| (nano targets.txt)
+	else
+		echo "Message: Now arp-scanning current subnet"; f_arpscansubnet
+	fi
+		echo "Message: We found `cat targets.txt | wc -l` targets"
+		f_outputtargets
+		echo -n "Message: Do you wish to edit this list (DELETE YOURSELF!) yes/no : "
+		f_yesorno && echo "Message: Chose not to edit... Continue with scan" || nano targets.txt ; f_outputtargets
+}
+
 f_findtargetstxt(){	#checks for targets.txt and offer to create
 	if [ -f ./targets.txt ]
 	then
 		echo "MESSAGE: targets.txt file located"
 		f_outputtargets
+		echo -n "MESSAGE: is the above listing correct? yes/no : "
+		f_yesorno \
+			&& f_createtargetstxt \
+			|| (echo "MESSAGE: Listing is correct, continue with scan")
 	else
 		echo -n "MESSAGE: there is no targets.txt file so do you want me to create one? yes/no : "
 		f_yesorno && exit 0
-		echo "MESSAGE: Now arp-scanning current subnet"
-		f_arpscansubnet
-		echo "MESSAGE: We found `cat targets.txt | wc -l` targets and have output them to targets.txt"
-		f_outputtargets
-		echo -n "MESSAGE: Do you wish to edit this list? (DELETE YOURSELF!)yes/no : "
-		f_yesorno && echo "MESSAGE: Chose not to edit.....continue with scan" || nano targets.txt ; f_outputtargets
+		f_createtargetstxt
+#		echo "MESSAGE: Now arp-scanning current subnet"
+#		f_arpscansubnet
+#		echo "MESSAGE: We found `cat targets.txt | wc -l` targets and have output them to targets.txt"
+#		f_outputtargets
+#		echo -n "MESSAGE: Do you wish to edit this list? (DELETE YOURSELF!)yes/no : "
+#		f_yesorno && echo "MESSAGE: Chose not to edit.....continue with scan" || nano targets.txt ; f_outputtargets
 	fi
 }
 f_numberoftargets(){ #counts number of targets in targets.txt
@@ -268,11 +288,11 @@ f_displayresults(){
 	cd "${DIRECTORY}"
 	cat *p.nmap | grep "scan\ report\ for\|Interesting\|open\|---------------------------------------------" | grep -v "OSScan" | grep -v "filtered" > open_ports.txt
 	xterm -title "OpenPorts from ${DIRECTORY}" -e "grep -E --color=always '.*(ssh|rdp|ssl|http|telnet|https|sslv2|mail|smtp|snmp|oracle|sql|tnls|ftp|sftp).*|' open_ports.txt | less -R" &
-	if [ -s WeakCiphers.txt ]
+	if [[ `grep -v Testing WeakCiphers.txt | wc -l` -gt 0 ]]
 	then
 		xterm -title "WeakCiphers from ${DIRECTORY}" -e "less -R WeakCiphers.txt" &
 	else
-		echo "No weak ciphers found" > WeakCiphers.txt
+		rm -f WeakCiphers.txt		
 		echo "MESSAGE: no weak ciphers found"
 	fi
 	cd -
