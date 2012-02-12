@@ -8,8 +8,14 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="2.8" #Jan/2012
+version="3.0" #Feb/2012
 # Changelog:
+# v3.0 - Many bug fixes (thanks Ion - http://bruteforce.gr/)
+#			Fixed w3af bug (missing dependencies pybloomfiltermap)
+#			Fixed warvox svn relocation issue
+#			Removed hydra svn and replaced with bt repo hydra (7.2)
+#			Added adobe reader install option
+#			Fixed typo in update router defence
 # v2.8 - Added tsocks (tsocks openssl s_client -connect www.target.com:443)
 # v2.71 - Fixed nmap issues with updating.
 # v2.7 - Added tool to get missing repo keys, unetbootin and parcellite. Also added missing repos
@@ -36,7 +42,7 @@ version="2.8" #Jan/2012
 # v1.6.1 - Fixed slight mistake in latest addition, Whoops!
 # v1.6 - Added tiger, creepy, netwox and arduino. Added sshkey and wicd configuration
 # v1.5 - Added deluge bittorent client and jockey-gtk for driver installations
-# v1.4 - BRUTEFORCE recommended adding the following:
+# v1.4 - Ion recommended adding the following:
 #			removal of istall icon
 #			changing of password
 #			addition of mono, recordmydesktop and terminator
@@ -247,6 +253,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		msfupdater "fixes metasploit updater" on \
 		fasttrack "add UPX-packing and signature stealing to fasttrack" on \
 		volatility "installs version 2.0 of volatility" on \
+		adobereader "install Adobe Reader" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -276,6 +283,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				msfupdater) : do ; i_msfupdater ;;
 				fasttrack) : do ; apt-get install -y python-pefile upx ;;
 				volatility) : do ; i_volatility ;; 
+				adobereader) : do ; i_adobereader ;; 
 			esac
 			sleep 2
 		done
@@ -368,7 +376,14 @@ i_w3af() {
 	svn co https://w3af.svn.sourceforge.net/svnroot/w3af/trunk w3af 
 	cp /tmp/backtrack-w3af-gui.desktop /usr/share/applications/.
 	cp /tmp/backtrack-w3af-console.desktop /usr/share/applications/. 
-	cp /tmp/w3af.desktop /usr/share/applications/. ; }
+	cp /tmp/w3af.desktop /usr/share/applications/. ; 
+	apt-get -y install python-nltk python-soappy python-lxml python-svn python2.6-dev
+	wget http://pypi.python.org/packages/source/p/pybloomfiltermmap/pybloomfiltermmap-0.2.0.tar.gz
+	git clone git://github.com/axiak/pybloomfiltermmap.git /tmp/pybloomfiltermmap
+	cd /tmp/pybloomfiltermmap
+	python setup.py install
+	cd -
+}
 i_openvas() {
 	apt-get install -y openvas-scanner
 	dialog --title "OpenVAS install" \
@@ -466,15 +481,7 @@ i_cisco-decrypt() {
 	gcc -Wall -o cisco-decrypt cisco-decrypt.c $(libgcrypt-config --libs --cflags)
 	}
 i_hydra() {
-	cd /tmp
-	apt-get -y purge hydra xhydra
-	apt-get -y install libssh-dev libpcre3-dev libpq-dev libsvn-dev libaprutil1-dev libapr1-dev libmysqlclient-dev libncp-dev libocc0-dev pkg-config libgtk2.0-dev libcln-dev
-	wget http://www.thc.org/releases/hydra-7.0-src.tar.gz
-	tar -zxvf hydra-7.0-src.tar.gz
-	cd hydra-7.0-src
-	./configure -DWITH_SSH1=On
-	make
-	make install
+	apt-get -y install hydra
 	}
 i_gnomenetworkmanager(){
 	apt-get -y install network-manager-gnome
@@ -524,6 +531,12 @@ i_volatility(){
 	rm -rf libforensic1394*
 	rm -rf volatility-2.0.tar.gz
 }
+i_adobereader(){
+		cd /tmp
+		wget ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.4.7/enu/AdbeRdr9.4.7-1_i386linux_enu.deb
+		dpkg -i AdbeRdr9.4.7-1_i386linux_enu.deb
+		cd -
+}
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
 u_msf() { /pentest/exploits/framework/msfupdate ; }
@@ -549,8 +562,8 @@ u_nessus() {
 			sleep 10
 	fi
 	/opt/nessus/sbin/nessus-update-plugins ;}
-u_routerdefense() { svn up /vaw/www/routerdefense/ ;}
-u_warvox() { svn up /pentest/telephony/warvox/ ;}
+u_routerdefense() { svn up /var/www/routerdefense/ ;}
+u_warvox() { rm -rf /pentest/telephony/warvox/ ; svn co http://www.metasploit.com/svn/warvox/trunk /pentest/telephony/warvox;}
 u_aircrack() {
 		cd /pentest/wireless/aircrack-ng/ && svn up
 		cd /pentest/wireless/aircrack-ng/scripts/ && chmod a+x airodump-ng-oui-update && ./airodump-ng-oui-update
