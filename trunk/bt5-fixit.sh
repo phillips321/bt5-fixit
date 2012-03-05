@@ -8,8 +8,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="3.0" #Feb/2012
+version="3.1" #Feb/2012
 # Changelog:
+# v3.1 - Added nessus to installs
 # v3.0 - Many bug fixes (thanks Ion - http://bruteforce.gr/)
 #			Fixed w3af bug (missing dependencies pybloomfiltermap)
 #			Fixed warvox svn relocation issue
@@ -190,6 +191,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		htop "like top but more functions" on \
 		libssl-dev "SSL development libraries" on \
 		scapy "packet manipulation program" on \
+		nessus "vulnerability assessment tool" on \
 		python-dev "python development libraries" on \
 		chromium-codecs-ffmpeg-extra "chromium extras" on \
 		chromium-codecs-ffmpeg-nonfree "chromium extras" on \
