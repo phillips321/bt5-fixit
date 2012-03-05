@@ -8,8 +8,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="3.1" #Feb/2012
+version="4.0" #March/2012
 # Changelog:
+# v4.0 - now works with BT5r2
 # v3.1 - Added nessus to installs
 # v3.0 - Many bug fixes (thanks Ion - http://bruteforce.gr/)
 #			Fixed w3af bug (missing dependencies pybloomfiltermap)
@@ -237,23 +238,14 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 	then
 		dialog --separate-output --output-fd 2 --title "Convert to SVN" --checklist "What packages do you want to install/convert to SVN installs?" 0 0 0 \
 		wifite "mass wep/wpa cracker" on \
-		w3af "Web Application Attack and Audit Framework" on \
 		openvas "Open Vulnerability Assessment System" on \
-		set "Social engineering Toolkit" on \
-		blindelephant "Web Application Fingerprinter" on \
-		sqlmap "Automatic SQL injection" on \
-		nikto "Web server scanner" on \
 		routerdefense "Cisco auditer" on \
-		pyrit "Install pyrit!" off \
 		fernwificracker "GUI based wifi cracker" on \
 		dropbox "Install Dropbox" off \
 		tiger "tiger" on \
-		creepy "creepy" on \
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
-		hydra "Latest v7.0 of hydra including xhydra" on \
 		msfupdater "fixes metasploit updater" on \
-		fasttrack "add UPX-packing and signature stealing to fasttrack" on \
 		volatility "installs version 2.0 of volatility" on \
 		adobereader "install Adobe Reader" on \
 		2> /tmp/answer
@@ -267,23 +259,15 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 			sleep 2
 			case ${opt} in
 				wifite) : do ; i_wifite ;;
-				w3af) : do ; i_w3af ;;
 				openvas) : do ; i_openvas ;;
-				blindelephant) : do ; i_blindelephant ;;
-				sqlmap) : do ; i_sqlmap ;;
-				exploitdb) : do ; i_exploitdb ;;
 				routerdefense) : do ; i_routerdefense ;;
-				pyrit) : do ; i_pyrit ;;
 				fernwificracker) : do ; i_fernwificracker ;;
 				dropbox) : do ; i_dropbox ;;
 				tiger) : do ; i_tiger ;;
-				creepy) : do ; i_creepy ;;
 				arduino) : do ; i_arduino ;;
 				cisco-decrypt) : do ; i_cisco-decrypt ;;
-				hydra) : do ; i_hydra ;;
 				ophcrack) : do ; i_ophcrack ;;
 				msfupdater) : do ; i_msfupdater ;;
-				fasttrack) : do ; apt-get install -y python-pefile upx ;;
 				volatility) : do ; i_volatility ;; 
 				adobereader) : do ; i_adobereader ;; 
 			esac
@@ -301,15 +285,13 @@ update_stuff(){ #updates packages previously converted to svn
 		w3af "update me?" on \
 		openvas "update me?" on \
 		set "update me?" on \
-		fasttrack "update me?" on \
-		blindelephant "update me?" on \
 		sqlmap "update me?" on \
+		fasttrack "update me?" on \
 		nikto "update me?" on \
 		exploitdb "update me?" on \
 		nessus "update me?" on \
 		routerdefense "update me?" on \
 		warvox "update me?" on \
-		aircrack "update me?" on \
 		giskismet "update me?" on \
 		nmap "update nmap fingerprints?" on \
 		fimap "update me?" on \
@@ -331,14 +313,12 @@ update_stuff(){ #updates packages previously converted to svn
 			openvas) : do ; u_openvas ;;
 			set) : do ;u_set ;;
 			fasttrack) : do ;u_fasttrack ;;
-			blindelephant) : do ;u_blindelephant ;;
 			sqlmap) : do ; u_sqlmap ;;
 			nikto) : do ; u_nikto ;;
 			exploitdb) : do ; u_exploitdb ;;
 			nessus) : do ; u_nessus ;;
 			routerdefense) : do ; u_routerdefense ;;
 			warvox) : do ; u_warvox ;;
-			aircrack) : do ; u_aircrack ;;
 			giskismet) : do ; u_giskismet ;;
 			nmap) : do ; u_nmap ;;
 			fimap) : do ; u_fimap ;;
@@ -369,23 +349,6 @@ i_wifite() {
 	cd /pentest/wireless/
 	wget -O wifite.py http://wifite.googlecode.com/svn/trunk/wifite.py
 	chmod +x wifite.py ; }
-i_w3af() { 
-	cp /usr/share/applications/backtrack-w3af-gui.desktop /tmp/.
-	cp /usr/share/applications/backtrack-w3af-console.desktop /tmp/.
-	cp /usr/share/app-install/desktop/w3af.desktop /tmp/.
-	apt-get purge -y w3af
-	cd /pentest/web
-	svn co https://w3af.svn.sourceforge.net/svnroot/w3af/trunk w3af 
-	cp /tmp/backtrack-w3af-gui.desktop /usr/share/applications/.
-	cp /tmp/backtrack-w3af-console.desktop /usr/share/applications/. 
-	cp /tmp/w3af.desktop /usr/share/applications/. ; 
-	apt-get -y install python-nltk python-soappy python-lxml python-svn python2.6-dev
-	wget http://pypi.python.org/packages/source/p/pybloomfiltermmap/pybloomfiltermmap-0.2.0.tar.gz
-	git clone git://github.com/axiak/pybloomfiltermmap.git /tmp/pybloomfiltermmap
-	cd /tmp/pybloomfiltermmap
-	python setup.py install
-	cd -
-}
 i_openvas() {
 	apt-get install -y openvas-scanner
 	dialog --title "OpenVAS install" \
@@ -399,38 +362,7 @@ Tell OpenVas you're happy with the settings - Just press [Enter]" 20 70
 	openvas-mkcert
 	openvas-adduser  
 	}
-i_blindelephant() {
-	cp /usr/share/applications/backtrack-blindelephant.desktop /tmp/.
-	apt-get purge -y blindelephant
-	cd /pentest/web
-	svn co https://blindelephant.svn.sourceforge.net/svnroot/blindelephant/trunk blindelephant
-	cd blindelephant/src
-	python setup.py install
-	cp /tmp/backtrack-blindelephant.desktop /usr/share/applications/. ; }
-i_sqlmap() {
-	cp /usr/share/applications/backtrack-sqlmap.desktop /tmp/.
-	apt-get purge -y sqlmap
-	cd /pentest/web/scanners
-	svn co https://svn.sqlmap.org/sqlmap/trunk/sqlmap sqlmap
-	ln -s /pentest/web/scanners/sqlmap /pentest/database/
-	cp /tmp/backtrack-sqlmap.desktop /usr/share/applications/. ; }
-i_nikto() {
-	cp /usr/share/applications/backtrack-nikto.desktop /tmp/.
-	apt-get purge -y nikto
-	cd /pentest/web/
-	svn co http://svn2.assembla.com/svn/Nikto_2/trunk/ nikto
-	cd nikto
-	./nikto.pl -update
-	cp /tmp/backtrack-nikto.desktop /usr/share/applications/. ; }
-i_routerdefense() { svn checkout http://routerdefense.googlecode.com/svn/trunk/ /vaw/www/routerdefense ;}
-i_pyrit() {
-	apt-get -y install libssl-dev scapy python-dev
-	cd /tmp/
-	svn checkout http://pyrit.googlecode.com/svn/trunk/ pyrit_svn
-	cd pyrit_svn/pyrit && python setup.py build && python setup.py install
-	cd /tmp/
-	rm -rf /tmp/pyrit_svn
-}
+i_routerdefense() { svn checkout http://routerdefense.googlecode.com/svn/trunk/ /var/www/routerdefense ;}
 i_fernwificracker() {
 	cd /pentest/wireless/
 	svn checkout http://fern-wifi-cracker.googlecode.com/svn/Fern-Wifi-Cracker/
@@ -450,7 +382,6 @@ i_dropbox(){
 	fi
 }
 i_tiger(){ apt-get -y install tiger ;}
-i_creepy(){ apt-get -y install creepy ;}
 i_arduino(){
 	apt-get -y install avr-libc make ant
 	cd /pentest/misc/
@@ -481,9 +412,6 @@ i_cisco-decrypt() {
 	cd /pentest/passwords/
 	wget http://www.unix-ag.uni-kl.de/~massar/soft/cisco-decrypt.c
 	gcc -Wall -o cisco-decrypt cisco-decrypt.c $(libgcrypt-config --libs --cflags)
-	}
-i_hydra() {
-	apt-get -y install hydra
 	}
 i_gnomenetworkmanager(){
 	apt-get -y install network-manager-gnome
@@ -541,20 +469,12 @@ i_adobereader(){
 }
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
-u_msf() { /pentest/exploits/framework/msfupdate ; }
+u_msf() { msfupdate ; }
 u_w3af() { svn up /pentest/web/w3af/ ;}
 u_openvas() { openvas-nvt-sync ;}
 u_set() { cd /pentest/exploits/set/ ; ./set-update ;}
-u_fasttrack() { 
-	apt-get -y update fasttrack
-	cd /pentest/exploits/fasttrack/ 
-	./fast-track.py -c 1 1 ;}
-u_blindelephant() {
-	 cd /pentest/web/blindelephant
-	svn up
-	cd src
-	python setup.py install ; }
-u_sqlmap() { svn up --trust-server-cert --non-interactive /pentest/database/sqlmap/ ;}
+u_fasttrack() { svn up /pentest/exploits/fasttrack/ ;}
+u_sqlmap() { cd /pentest/database/sqlmap/ ; python sqlmap.py --update ; } 
 u_nikto() { cd /pentest/web/nikto/ ; svn up ; ./nikto.pl -update ;}
 u_exploitdb() { svn up /pentest/exploits/exploitdb ;}
 u_nessus() { 
@@ -566,18 +486,10 @@ u_nessus() {
 	/opt/nessus/sbin/nessus-update-plugins ;}
 u_routerdefense() { svn up /var/www/routerdefense/ ;}
 u_warvox() { rm -rf /pentest/telephony/warvox/ ; svn co http://www.metasploit.com/svn/warvox/trunk /pentest/telephony/warvox;}
-u_aircrack() {
-		cd /pentest/wireless/aircrack-ng/ && svn up
-		cd /pentest/wireless/aircrack-ng/scripts/ && chmod a+x airodump-ng-oui-update && ./airodump-ng-oui-update
-		cd /tmp/
-}
 u_giskismet() { svn up /pentest/wireless/giskismet/ ;}
 u_nmap() { nmap --script-updatedb ;}
 u_fimap() { cd /pentest/web/fimap/ && ./fimap.py --update-def ;}
 u_fernwificracker() { svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py ;}
-
-
-
 main(){ #default block of code
 startdir=`pwd` ; cd /tmp/
 if [ "$#" == 0 ]
