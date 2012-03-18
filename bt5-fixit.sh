@@ -242,12 +242,13 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		routerdefense "Cisco auditer" on \
 		fernwificracker "GUI based wifi cracker" on \
 		dropbox "Install Dropbox" off \
-		tiger "tiger" on \
+		tiger "tiger" off \
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
 		msfupdater "fixes metasploit updater" on \
 		volatility "installs version 2.0 of volatility" on \
 		adobereader "install Adobe Reader" on \
+		hostmap "hostname and virtual host enumeration" on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -270,6 +271,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				msfupdater) : do ; i_msfupdater ;;
 				volatility) : do ; i_volatility ;; 
 				adobereader) : do ; i_adobereader ;; 
+				hostmap) : do ; i_hostmap ;; 
 			esac
 			sleep 2
 		done
@@ -462,10 +464,14 @@ i_volatility(){
 	rm -rf volatility-2.0.tar.gz
 }
 i_adobereader(){
-		cd /tmp
-		wget ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.4.7/enu/AdbeRdr9.4.7-1_i386linux_enu.deb
-		dpkg -i AdbeRdr9.4.7-1_i386linux_enu.deb
-		cd -
+	cd /tmp
+	wget ftp://ftp.adobe.com/pub/adobe/reader/unix/9.x/9.4.7/enu/AdbeRdr9.4.7-1_i386linux_enu.deb
+	dpkg -i AdbeRdr9.4.7-1_i386linux_enu.deb
+	cd -
+}
+i_hostmap(){
+	cd /pentest/enumeration/web/
+	svn co http://svn.lonerunners.net/projects/hostmap/trunk hostmap
 }
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
