@@ -3,6 +3,7 @@
 # Authors:    	phillips321 (matt@phillips321.co.uk)
 #		Ari Davies  (kussic@chaos6.net)
 #		Rich Hicks  (about.me/R.Hicks)
+#		Ion/ikoniaris (bruteforce.gr)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings tools on BackTrack5 to bleeding edge 
 #               and adds missing tools
@@ -10,7 +11,10 @@
 #__________________________________________________________
 version="4.0" #March/2012
 # Changelog:
-# v4.0 - now works with BT5r2
+# v4.0.1 - Added option to change the default MySQL's root password (toor)
+#			Added hostmap (virtual hosts enumeration), VirtualBox 
+#			Added missing ophcrack option, minor fixes
+# v4.0 - ==> Now works with BT5r2 <==
 # v3.1 - Added nessus to installs
 # v3.0 - Many bug fixes (thanks Ion - http://bruteforce.gr/)
 #			Fixed w3af bug (missing dependencies pybloomfiltermap)
@@ -105,25 +109,26 @@ extra_repositories() { #this adds extra repos allowing more software to be insta
 			exit 1
 		fi
 		apt-get install -y python-software-properties
-	    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 4E5E17B5
+	    	apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 4E5E17B5
 		add-apt-repository ppa:chromium-daily/stable
-		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-		
+		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -	
 		echo "deb http://packages.fwbuilder.org/deb/stable/ lucid contrib" >> /etc/apt/sources.list
 		wget http://www.fwbuilder.org/PACKAGE-GPG-KEY-fwbuilder.asc && apt-key add PACKAGE-GPG-KEY-fwbuilder.asc
 		rm PACKAGE-GPG-KEY-fwbuilder.asc
 		echo "deb http://dl.google.com/linux/chrome/deb/ stable main #Google Stable Source" >> /etc/apt/sources.list
 		wget -O - http://deb.opera.com/archive.key | apt-key add -
 		echo "deb http://deb.opera.com/opera/ lenny non-free #Opera Official Source" >> /etc/apt/sources.list
-    echo "deb http://archive.getdeb.net/ubuntu lucid-getdeb apps #GetDeb Software Portal" >> /etc/apt/sources.list.d/getdeb.list
-    wget -q -O- http://archive.getdeb.net/getdeb-archive.key | apt-key add -
+		echo "deb http://archive.getdeb.net/ubuntu lucid-getdeb apps #GetDeb Software Portal" >> /etc/apt/sources.list.d/getdeb.list
+		wget -q -O- http://archive.getdeb.net/getdeb-archive.key | apt-key add -
 		add-apt-repository ppa:shutter/ppa
 		add-apt-repository ppa:tualatrix/ppa
 		add-apt-repository ppa:ubuntu-wine/ppa
-    add-apt-repository ppa:deluge-team/ppa
-    add-apt-repository ppa:gnome-terminator/ppa
-    add-apt-repository ppa:mozillateam/firefox-stable
-    add-apt-repository ppa:nilarimogard/webupd8
+    		add-apt-repository ppa:deluge-team/ppa
+    		add-apt-repository ppa:gnome-terminator/ppa
+    		add-apt-repository ppa:mozillateam/firefox-stable
+    		add-apt-repository ppa:nilarimogard/webupd8
+		echo "deb http://download.virtualbox.org/virtualbox/debian lucid contrib non-free" >> /etc/apt/sources.list
+		wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | apt-key add -		
 		apt-get update
 		apt-get -y dist-upgrade
 		apt-get -y autoclean
@@ -138,7 +143,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		bashcompletion "allow bash completion" on \
 		kernelsources "Install kernel sources" on \
 		RemoveInstallIcon "Removes install backtrack icon from desktop" on \
-		password "asks for a new password for the system" on \
+		password "change the default root password for the system" on \
+		mysql-password "change the default MySQL password" on \
 		missing-drivers "allows easy install of nVidia, AMD and Wireless Drivers" on \
 		ssh-keys "creates ssh keys for ssh server" on \
 		wicd "configure usage of wicd" off \
@@ -161,7 +167,8 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 			bashcompletion) : do ; sed -i '/# enable bash completion in/,+3{/enable bash completion/!s/^#//}' /etc/bash.bashrc ; echo "Bash Completion enabled" ;;
 			kernelsources) : do ; prepare-kernel-sources ; cd /usr/src/linux ; cp -rf include/generated/* include/linux/ ;;
 			RemoveInstallIcon) : do ; if [ -f /root/Desktop/backtrack-install.desktop ]; then rm /root/Desktop/backtrack-install.desktop ; fi ;;
-			password) : do ; echo "Time to change your password" ; passwd ;;
+			password) : do ; echo "Time to change the root password" ; passwd ;;
+			mysql-password) : do ; echo "Time to change your MySQL password" ; read -s -p "Enter password: " mysqlpass; echo ; service mysql start ; mysqladmin -u root -ptoor password $mysqlpass ; service mysql stop ;;
 			missing-drivers) : do ; apt-get -y install jockey-gtk ;;
 			ssh-keys) : do ; sshd-generate ;;
 			wicd) : do ; dpkg-reconfigure wicd ; update-rc.d wicd defaults ;;
@@ -221,10 +228,10 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		tree "Linux tree command" on \
 		meld "Quick way to show a visual diff between 2/3 files" on \
 		dhcp3-server "Add a DHCP server to BT5" on \
-    launchpad-getkeys "Manage missing keys for repositories" on \
-    unetbootin "Allows creation of bootable USB drives from ISOs" on \
-    parcellite "Management of the clipboard" on \
-    tsocks "allows connection from terminal to HTTPS" on \
+    		launchpad-getkeys "Manage missing keys for repositories" on \
+    		unetbootin "Allows creation of bootable USB drives from ISOs" on \
+    		parcellite "Management of the clipboard" on \
+    		tsocks "allows connection from terminal to HTTPS" on \
 		2> /tmp/answer
 	result=`cat /tmp/answer` && rm /tmp/answer ; clear
 	apt-get install -y ${result}
@@ -245,10 +252,12 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		tiger "tiger" off \
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
+		ophcrack "Windows password cracker based on rainbow tables" on \
 		msfupdater "fixes metasploit updater" on \
 		volatility "installs version 2.0 of volatility" on \
 		adobereader "install Adobe Reader" on \
 		hostmap "hostname and virtual host enumeration" on \
+		virtualbox "create and manage virtual machines"	on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
 		for opt in ${result}
@@ -272,6 +281,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				volatility) : do ; i_volatility ;; 
 				adobereader) : do ; i_adobereader ;; 
 				hostmap) : do ; i_hostmap ;; 
+				virtualbox) : do ; i_virtualbox ;; 
 			esac
 			sleep 2
 		done
@@ -472,6 +482,13 @@ i_adobereader(){
 i_hostmap(){
 	cd /pentest/enumeration/web/
 	svn co http://svn.lonerunners.net/projects/hostmap/trunk hostmap
+}
+i_virtualbox(){
+	prepare-kernel-sources
+	cd /usr/src/linux
+	cp -rf include/generated/* include/linux/
+	apt-get install dkms
+	apt-get install virtualbox-4.1
 }
 ### Update commands for each program ###################################################################################
 u_wifite() { /pentest/wireless/wifite.py -upgrade ; }
