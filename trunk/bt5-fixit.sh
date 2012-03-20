@@ -9,8 +9,9 @@
 #               and adds missing tools
 # Released:   	www.phillips321.co.uk
 #__________________________________________________________
-version="4.0" #March/2012
+version="4.1" #March/2012
 # Changelog:
+# v4.1 - Added makeline function for output generation
 # v4.0.1 - Added option to change the default MySQL's root password (toor)
 #			Added hostmap (virtual hosts enumeration), VirtualBox 
 #			Added missing ophcrack option, minor fixes
@@ -158,9 +159,9 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 	for opt in ${result}
 	do
 		clear
-		echo "###############################################"
+		makeline
 		echo "Now running ${opt} "
-		echo "###############################################"
+		makeline
 		sleep 2
 		case ${opt} in
 			fixsplash) : do ; fix-splash ;;
@@ -263,9 +264,9 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		for opt in ${result}
 		do
 			clear
-			echo "###############################################"
+			makeline
 			echo "Now installing: ${opt}"
-			echo "###############################################"
+			makeline
 			sleep 2
 			case ${opt} in
 				wifite) : do ; i_wifite ;;
@@ -314,9 +315,9 @@ update_stuff(){ #updates packages previously converted to svn
 	for opt in ${result}
 	do
 		clear
-		echo "###############################################"
+		makeline
 		echo "Now updating: ${opt}"
-		echo "###############################################"
+		makeline
 		sleep 2
 		case ${opt} in
 			wifite) : do ; u_wifite ;;
@@ -513,6 +514,7 @@ u_giskismet() { svn up /pentest/wireless/giskismet/ ;}
 u_nmap() { nmap --script-updatedb ;}
 u_fimap() { cd /pentest/web/fimap/ && ./fimap.py --update-def ;}
 u_fernwificracker() { svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py ;}
+makeline(){ printf "%${1:-$COLUMNS}s\n" ""|tr " " ${2:-#;};}
 main(){ #default block of code
 startdir=`pwd` ; cd /tmp/
 if [ "$#" == 0 ]
