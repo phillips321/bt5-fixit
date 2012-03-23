@@ -5,12 +5,13 @@
 #		Rich Hicks  (about.me/R.Hicks)
 #		Ion/ikoniaris (bruteforce.gr)
 # License:    	CC BY-SA 3.0
-# Use:        	Brings tools on BackTrack5 to bleeding edge 
-#               and adds missing tools
-# Released:   	www.phillips321.co.uk
+# Use:        	Brings existing tools on BackTrack5 to bleeding edge,
+#		adds missing security tools and other useful utilities.
+# Website:   	www.phillips321.co.uk
 #__________________________________________________________
-version="4.1" #March/2012
+version="4.2" #March/2012
 # Changelog:
+# v4.2 - Added Absinthe (GUI tool for blind SQL injection)
 # v4.1 - Added makeline function for output generation
 # v4.0.1 - Added option to change the default MySQL's root password (toor)
 #			Added hostmap (virtual hosts enumeration), VirtualBox 
@@ -258,6 +259,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		volatility "installs version 2.0 of volatility" on \
 		adobereader "install Adobe Reader" on \
 		hostmap "hostname and virtual host enumeration" on \
+		absinthe "GUI tool to automate blind sql injection" on \
 		virtualbox "create and manage virtual machines"	on \
 		2> /tmp/answer
 		result=`cat /tmp/answer` && rm /tmp/answer ; clear
@@ -282,6 +284,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				volatility) : do ; i_volatility ;; 
 				adobereader) : do ; i_adobereader ;; 
 				hostmap) : do ; i_hostmap ;; 
+				absinthe) : do ; i_absinthe ;;
 				virtualbox) : do ; i_virtualbox ;; 
 			esac
 			sleep 2
@@ -484,6 +487,14 @@ i_hostmap(){
 	cd /pentest/enumeration/web/
 	svn co http://svn.lonerunners.net/projects/hostmap/trunk hostmap
 	cd hostmap && chmod +x hostmap.rb
+}
+i_absinthe(){
+	apt-get install -y mono-runtime mono-devel
+	cd /tmp/
+	wget http://www.0x90.org/releases/absinthe/Absinthe-1.4.1-Linux.tar.gz
+	tar xvf Absinthe-1.4.1-Linux.tar.gz
+	cd Absinthe-1.4.1-Linux/
+	./install.sh
 }
 i_virtualbox(){
 	prepare-kernel-sources
