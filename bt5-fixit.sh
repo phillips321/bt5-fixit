@@ -483,6 +483,7 @@ i_adobereader(){
 i_hostmap(){
 	cd /pentest/enumeration/web/
 	svn co http://svn.lonerunners.net/projects/hostmap/trunk hostmap
+	cd hostmap && chmod +x hostmap.rb
 }
 i_virtualbox(){
 	prepare-kernel-sources
