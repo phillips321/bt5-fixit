@@ -9,8 +9,9 @@
 #		adds missing security tools and other useful utilities.
 # Website:   	www.phillips321.co.uk
 #____________________________________________________________________
-version="4.3" #March/2012
+version="4.4" #March/2012
 # Changelog:
+# v4.4 - Added putty, eric python ide, openoffice.org
 # v4.3 - Added Java JDK (default-jdk), RapidSVN (gui client for subversion)
 # v4.2 - Added Absinthe (GUI tool for blind SQL injection)
 # v4.1 - Added makeline function for output generation
@@ -150,7 +151,7 @@ configuration_stuff(){ #changes small things that have been overlooked in BackTr
 		mysql-password "change the default MySQL password" on \
 		missing-drivers "allows easy install of nVidia, AMD and Wireless Drivers" on \
 		ssh-keys "creates ssh keys for ssh server" on \
-		wicd "configure usage of wicd" off \
+		wicd "configure usage of wicd (fix warning message)" off \
 		fixsound "make sure pulseaudio starts with gnome" on \
 		aptalias "create alias for APT (Like Linux Mint)" on \
 		autologin "auto login as root" off \
@@ -192,12 +193,13 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		filezilla "an FTP client" on \
 		synaptic "gui for aptitude" on \
 		geany "Text editor for programmers" on \
+		eric "full featured Python IDE" off \
 		rapidsvn "GUI client for subversion" off \
 		netsed "changes network packets off the fly" on \
 		arp-scan "allows enumeration of devices off subnet" on \
 		shutter "great screenshot utility for gnome" on \
 		gnome-web-photo "allows screenshots to be taken of URLs" on \
-		vino "Gnome VNC server" on \
+		vino "Gnome VNC server" off \
 		etherape "grpahical network monitor" on \
 		gufw "gnome frontend for UbuntuFireWall" on \
 		htop "like top but more functions" on \
@@ -208,7 +210,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		default-jdk "Java Development Kit" on \
 		chromium-codecs-ffmpeg-extra "chromium extras" on \
 		chromium-codecs-ffmpeg-nonfree "chromium extras" on \
-		opera "another web browser, the more the merrier" on \
+		opera "another web browser, the more the merrier" off \
 		flashplugin-nonfree-extrasound "adobe flash plugin extras" on \
 		flashplugin-nonfree "adobe flash plugin " on \
 		p7zip-full "7zip archive utility" on \
@@ -226,13 +228,15 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		gtk-recordmydesktop "allows you to easily record your entire screen" on \
 		mono-runtime "mono runtime tools" on \
 		mono-devel "mono development libraries" off \
+		openoffice.org "office productivity suite off" \
 		terminator "terminal emulator with advanced features" on \
 		deluge "bittorent client" on \
 		netwox "network toolbox" on \
 		tsclient "Terminal Servers Client" on \
+		putty "Telnet/SSH client for X" on \
 		tree "Linux tree command" on \
 		meld "Quick way to show a visual diff between 2/3 files" on \
-		dhcp3-server "Add a DHCP server to BT5" on \
+		dhcp3-server "Add a DHCP server to BT5" off \
     		launchpad-getkeys "Manage missing keys for repositories" on \
     		unetbootin "Allows creation of bootable USB drives from ISOs" on \
     		parcellite "Management of the clipboard" on \
