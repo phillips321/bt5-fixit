@@ -1,5 +1,5 @@
 #!/bin/bash
-#__________________________________________________________
+#____________________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
 #		Ari Davies  (kussic@chaos6.net)
 #		Rich Hicks  (about.me/R.Hicks)
@@ -8,9 +8,10 @@
 # Use:        	Brings existing tools on BackTrack5 to bleeding edge,
 #		adds missing security tools and other useful utilities.
 # Website:   	www.phillips321.co.uk
-#__________________________________________________________
-version="4.2" #March/2012
+#____________________________________________________________________
+version="4.3" #March/2012
 # Changelog:
+# v4.3 - Added Java JDK (default-jdk), RapidSVN (gui client for subversion)
 # v4.2 - Added Absinthe (GUI tool for blind SQL injection)
 # v4.1 - Added makeline function for output generation
 # v4.0.1 - Added option to change the default MySQL's root password (toor)
@@ -191,6 +192,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		filezilla "an FTP client" on \
 		synaptic "gui for aptitude" on \
 		geany "Text editor for programmers" on \
+		rapidsvn "GUI client for subversion" off \
 		netsed "changes network packets off the fly" on \
 		arp-scan "allows enumeration of devices off subnet" on \
 		shutter "great screenshot utility for gnome" on \
@@ -203,6 +205,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		scapy "packet manipulation program" on \
 		nessus "vulnerability assessment tool" on \
 		python-dev "python development libraries" on \
+		default-jdk "Java Development Kit" on \
 		chromium-codecs-ffmpeg-extra "chromium extras" on \
 		chromium-codecs-ffmpeg-nonfree "chromium extras" on \
 		opera "another web browser, the more the merrier" on \
