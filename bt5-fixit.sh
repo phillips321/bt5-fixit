@@ -9,8 +9,9 @@
 #		adds missing security tools and other useful utilities.
 # Website:   	www.phillips321.co.uk
 #____________________________________________________________________
-version="4.4" #March/2012
+version="4.5" #March/2012
 # Changelog:
+# v4.5 - Added HTTrack Website Copier, fixed minor error with openoffice.org
 # v4.4 - Added putty, eric python ide, openoffice.org
 # v4.3 - Added Java JDK (default-jdk), RapidSVN (gui client for subversion)
 # v4.2 - Added Absinthe (GUI tool for blind SQL injection)
@@ -228,7 +229,8 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		gtk-recordmydesktop "allows you to easily record your entire screen" on \
 		mono-runtime "mono runtime tools" on \
 		mono-devel "mono development libraries" off \
-		openoffice.org "office productivity suite off" \
+		openoffice.org "office productivity suite" off \
+		webhttrack "offline browsing utility" on \
 		terminator "terminal emulator with advanced features" on \
 		deluge "bittorent client" on \
 		netwox "network toolbox" on \
