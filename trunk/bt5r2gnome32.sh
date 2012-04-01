@@ -28,7 +28,7 @@ apt-get update
 apt-get -y dist-upgrade
 
 ##installs
-apt-get -y install jockey-gtk rungetty linux-headers filezilla synaptic geany shutter gnome-web-photo vino gufw nessus python-dev chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg-nonfree opera flashplugin-nonfree-extrasound flashplugin-nonfree file-roller giplet ubuntu-tweak compiz-plugins fwbuilder gcalctool gtk-recordmydesktop mono-runtime mono-devel deluge tsclient meld launchpad-getkeys unetbootin wine1.3-gecko cmake
+apt-get -y install jockey-gtk rungetty linux-headers filezilla synaptic geany shutter gnome-web-photo vino gufw nessus python-dev chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg-nonfree opera flashplugin-nonfree-extrasound flashplugin-nonfree file-roller giplet ubuntu-tweak compiz-plugins fwbuilder gcalctool gtk-recordmydesktop mono-runtime mono-devel deluge tsclient meld launchpad-getkeys unetbootin wine1.3-gecko cmake tftp ntp rcconf
 apt-get -y clean
 apt-get -y autoremove
 apt-get -y autoclean
