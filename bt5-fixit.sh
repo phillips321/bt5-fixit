@@ -1,16 +1,17 @@
 #!/bin/bash
 #____________________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
+#		Ion/ikoniaris (bruteforce.gr)
 #		Ari Davies  (kussic@chaos6.net)
 #		Rich Hicks  (about.me/R.Hicks)
-#		Ion/ikoniaris (bruteforce.gr)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings existing tools on BackTrack5 to bleeding edge,
 #		adds missing security tools and other useful utilities.
 # Website:   	www.phillips321.co.uk
 #____________________________________________________________________
-version="4.5" #March/2012
+version="4.6" #April/2012
 # Changelog:
+# v4.6 - Added Skype for Linux, moved tiger to apt-powered additions
 # v4.5 - Added HTTrack Website Copier, fixed minor error with openoffice.org
 # v4.4 - Added putty, eric python ide, openoffice.org
 # v4.3 - Added Java JDK (default-jdk), RapidSVN (gui client for subversion)
@@ -238,6 +239,7 @@ missing_stuff(){ #installs software that is missing that many people rely on!
 		putty "Telnet/SSH client for X" on \
 		tree "Linux tree command" on \
 		meld "Quick way to show a visual diff between 2/3 files" on \
+		tiger "Unix server security checker" off \
 		dhcp3-server "Add a DHCP server to BT5" off \
     		launchpad-getkeys "Manage missing keys for repositories" on \
     		unetbootin "Allows creation of bootable USB drives from ISOs" on \
@@ -260,7 +262,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 		routerdefense "Cisco auditer" on \
 		fernwificracker "GUI based wifi cracker" on \
 		dropbox "Install Dropbox" off \
-		tiger "tiger" off \
+		skype "VoIP communication software" on \
 		arduino "Arduino based tools (includes teensy addons)" off \
 		cisco-decrypt "Allows decode of pcf password hashes" on \
 		ophcrack "Windows password cracker based on rainbow tables" on \
@@ -285,7 +287,7 @@ install_stuff(){ #removes existing packages and replaces them with svn versions
 				routerdefense) : do ; i_routerdefense ;;
 				fernwificracker) : do ; i_fernwificracker ;;
 				dropbox) : do ; i_dropbox ;;
-				tiger) : do ; i_tiger ;;
+				skype) : do ; i_skype ;;
 				arduino) : do ; i_arduino ;;
 				cisco-decrypt) : do ; i_cisco-decrypt ;;
 				ophcrack) : do ; i_ophcrack ;;
@@ -406,7 +408,12 @@ i_dropbox(){
 		rm nautilus-dropbox_0.6.8_i386.deb
 	fi
 }
-i_tiger(){ apt-get -y install tiger ;}
+i_skype(){
+	cd /tmp/
+	wget http://download.skype.com/linux/skype-ubuntu_2.2.0.35-1_i386.deb
+	dpkg -i skype-ubuntu_2.2.0.35-1_i386.deb
+	rm skype-ubuntu_2.2.0.35-1_i386.deb
+}
 i_arduino(){
 	apt-get -y install avr-libc make ant
 	cd /pentest/misc/
