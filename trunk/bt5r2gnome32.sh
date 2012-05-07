@@ -28,7 +28,7 @@ apt-get update
 apt-get -y dist-upgrade
 
 ##installs
-apt-get -y install jockey-gtk rungetty linux-headers filezilla synaptic geany shutter gnome-web-photo vino gufw nessus python-dev chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg-nonfree opera flashplugin-nonfree-extrasound flashplugin-nonfree file-roller giplet ubuntu-tweak compiz-plugins fwbuilder gcalctool gtk-recordmydesktop mono-runtime mono-devel deluge tsclient meld launchpad-getkeys unetbootin wine1.3-gecko cmake tftp ntp rcconf
+apt-get -y install jockey-gtk rungetty linux-headers filezilla synaptic geany shutter gnome-web-photo vino gufw nessus python-dev chromium-codecs-ffmpeg-extra chromium-codecs-ffmpeg-nonfree opera flashplugin-nonfree-extrasound flashplugin-nonfree file-roller giplet ubuntu-tweak compiz-plugins fwbuilder gcalctool gtk-recordmydesktop mono-runtime mono-devel deluge tsclient meld launchpad-getkeys unetbootin wine1.3-gecko cmake tftp ntp rcconf rsh-client rlogin
 apt-get -y clean
 apt-get -y autoremove
 apt-get -y autoclean
@@ -89,6 +89,9 @@ export JAVA_HOME=”/opt/java/jre1.6.?_??/bin/java”
 #change font size to 8
 #add giplet and system monitor to task bar
 
+##my tools
+svn checkout http://phillips321.googlecode.com/svn/trunk/ /root/phillips321
+
 
 ##things to update each sunday
 /pentest/wireless/wifite.py -upgrade
@@ -107,7 +110,7 @@ svn up /pentest/wireless/giskismet/
 nmap --script-updatedb
 cd /pentest/web/fimap/ && ./fimap.py --update-def
 svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py
-
+svn up /root/phillips321
 
 
 
