@@ -1,16 +1,17 @@
 #!/bin/bash
-#____________________________________________________________________
+#_______________________________________________________________________
 # Authors:    	phillips321 (matt@phillips321.co.uk)
-#		Ion/ikoniaris (bruteforce.gr)
-#		Ari Davies  (kussic@chaos6.net)
-#		Rich Hicks  (about.me/R.Hicks)
+#               Ion/ikoniaris (http://bruteforce.gr)
+#		        Ari Davies  (kussic@chaos6.net)
+#		        Rich Hicks  (http://about.me/R.Hicks)
 # License:    	CC BY-SA 3.0
 # Use:        	Brings existing tools on BackTrack5 to bleeding edge,
-#		adds missing security tools and other useful utilities.
+#		        adds missing security tools and other useful utilities.
 # Website:   	www.phillips321.co.uk
-#____________________________________________________________________
-version="4.6" #April/2012
+#_______________________________________________________________________
+version="4.6.1" #August/2012
 # Changelog:
+# v4.6.1 - Fixed Fern-Wifi-Cracker upgrade option
 # v4.6 - Added Skype for Linux, moved tiger to apt-powered additions
 # v4.5 - Added HTTrack Website Copier, fixed minor error with openoffice.org
 # v4.4 - Added putty, eric python ide, openoffice.org
@@ -393,7 +394,7 @@ i_routerdefense() { svn checkout http://routerdefense.googlecode.com/svn/trunk/ 
 i_fernwificracker() {
 	cd /pentest/wireless/
 	svn checkout http://fern-wifi-cracker.googlecode.com/svn/Fern-Wifi-Cracker/
-	chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py
+	chmod +x /pentest/wireless/fern-wifi-cracker/execute.py
 	}
 i_dropbox(){
 	if [ "`dpkg -s nautilus-dropbox | grep Status`" != "Status: install ok installed" ]
@@ -541,7 +542,7 @@ u_warvox() { rm -rf /pentest/telephony/warvox/ ; svn co http://www.metasploit.co
 u_giskismet() { svn up /pentest/wireless/giskismet/ ;}
 u_nmap() { nmap --script-updatedb ;}
 u_fimap() { cd /pentest/web/fimap/ && ./fimap.py --update-def ;}
-u_fernwificracker() { svn up /pentest/wireless/Fern-Wifi-Cracker/ ; chmod +x /pentest/wireless/Fern-Wifi-Cracker/execute.py ;}
+u_fernwificracker() { svn up /pentest/wireless/fern-wifi-cracker/ ; chmod +x /pentest/wireless/fern-wifi-cracker/execute.py ;}
 makeline(){ printf "%${1:-$COLUMNS}s\n" ""|tr " " ${2:-#;};}
 main(){ #default block of code
 startdir=`pwd` ; cd /tmp/
